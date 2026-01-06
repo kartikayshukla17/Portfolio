@@ -12,7 +12,7 @@ const skills = [
   },
   {
     category: "Backend",
-    items: ["Node.js", "Express.js", "REST APIs", "MongoDB"],
+    items: ["Node.js", "Express.js", "REST APIs", "MongoDB", "PostgreSQL"],
   },
   {
     category: "Tools & Practices",
@@ -21,7 +21,7 @@ const skills = [
       "VS Code",
       "CI/CD basics",
       "Code Reviews",
-      "Mentoring",
+
     ],
   },
 ];
