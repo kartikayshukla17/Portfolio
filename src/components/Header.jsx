@@ -23,43 +23,54 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-background/80 backdrop-blur-md border-b border-border py-4" : "bg-transparent py-6"
+      className={`sticky top-0 z-50 w-full border-b transition-all duration-300 ${scrolled ? "border-primary/20 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md" : "border-transparent bg-transparent py-2"
         }`}
     >
-      <div className="container mx-auto px-4 flex items-center justify-between">
-        <motion.div
-          className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-500 cursor-pointer"
-          whileHover={{ scale: 1.05 }}
-        >
-          Kartikay.dev
-        </motion.div>
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-12">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-background-dark">
+            <span className="material-symbols-outlined font-bold">terminal</span>
+          </div>
+          <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Kartikay.<span className="text-primary">dev</span></span>
+        </div>
 
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-10">
           {navLinks.map((link) => (
             <a
               key={link.name}
               href={link.href}
-              className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors hover:underline underline-offset-4"
+              className="text-sm font-medium hover:text-primary transition-colors hover:underline underline-offset-4"
             >
               {link.name}
             </a>
           ))}
+        </nav>
 
+        <div className="flex items-center gap-3">
           <Button
             variant="ghost"
             size="icon"
             onClick={toggleTheme}
-            className="rounded-full"
+            className="rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             <motion.span
               initial={false}
-              animate={{ rotate: theme === 'light' ? 0 : 180 }}
-              transition={{ duration: 0.3 }}
+              animate={{ rotate: theme === 'light' ? 0 : 360 }}
+              transition={{ duration: 0.5 }}
+              className="flex items-center justify-center text-slate-600 dark:text-slate-300"
             >
-              {theme === 'light' ? '🌙' : '☀️'}
+              <span className="material-symbols-outlined text-[22px]">
+                {theme === 'light' ? 'dark_mode' : 'light_mode'}
+              </span>
             </motion.span>
           </Button>
-        </nav>
+          <a
+            href="#contact"
+            className="rounded-full bg-primary px-6 py-2.5 text-sm font-bold text-background-dark hover:brightness-110 transition-all neon-glow hidden sm:inline-block"
+          >
+            Hire Me
+          </a>
+        </div>
       </div>
     </header>
   );

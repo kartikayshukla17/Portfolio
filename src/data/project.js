@@ -14,7 +14,7 @@ const project = [
     description:
       "Streamlines collaboration between Leads and Associates with organization management, task lifecycles, and real-time notifications, enforcing strict data isolation.",
     tech: ["React", "Socket.io", "Node.js", "Express", "MongoDB", "JWT"],
-    code: "", // Not explicitly provided
+    code: "https://github.com/kartikayshukla17/FirmCommand",
     demo: "https://firmcommand-frontend.onrender.com/",
   },
   {
@@ -23,7 +23,7 @@ const project = [
     description:
       "A MERN stack application allowing users to convert text prompts into stunning visuals using Clipdrop API, featuring a credit system and Razorpay integration.",
     tech: ["React", "Tailwind CSS", "Node.js", "MongoDB", "Razorpay"],
-    code: "", // Not explicitly provided
+    code: "https://github.com/kartikayshukla17/Visionary_AI",
     demo: "https://visionary-ai-amber.vercel.app/",
   },
 ];

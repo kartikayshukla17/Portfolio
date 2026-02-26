@@ -11,7 +11,7 @@ import project from "./data/project.js";
 
 const App = () => {
   return (
-    <div className="app">
+    <div className="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased transition-colors duration-300 min-h-screen flex flex-col">
       <Header />
       <main>
         <Hero />

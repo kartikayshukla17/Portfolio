@@ -1,71 +1,88 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent } from "@/components/ui/card";
 
 const About = () => {
   return (
-    <section className="py-20 bg-muted/30" id="about">
-      <div className="container mx-auto px-4">
+    <section className="py-12 lg:py-20 px-4 max-w-md md:max-w-7xl mx-auto" id="about">
+      <motion.div
+        className="mb-8 md:mb-16 md:text-center"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+      >
+        <h2 className="text-4xl font-bold tracking-tight lg:text-5xl mb-2 font-display">
+          About <span className="text-primary">Me</span>
+        </h2>
+        <p className="text-slate-600 dark:text-slate-400 mt-2 md:text-lg">Crafting digital experiences with neon precision.</p>
+      </motion.div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-12">
+        {/* Who I Am Card */}
         <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 20 }}
+          className="flex flex-col gap-4 rounded-xl bg-slate-200/50 dark:bg-primary/5 p-5 border border-primary/10 neon-border"
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-3xl font-bold mb-4">About Me</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Full stack engineer with a passion for clean code, clear
-            explanations, and practical learning.
-          </p>
+          <div className="flex justify-between items-start">
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="material-symbols-outlined text-primary">rocket_launch</span>
+                <p className="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight">Who I Am</p>
+              </div>
+              <p className="text-slate-600 dark:text-slate-400 text-sm md:text-base font-normal leading-relaxed">
+                Passionate developer building the future of tech with speed and precision. I bridge the gap between complex logic and intuitive design.
+              </p>
+            </div>
+          </div>
+
+          <a href="#journey" className="hidden md:flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-background-dark text-sm font-bold tracking-wide w-fit hover:brightness-110 transition-all mt-4">
+            <span>Read More</span>
+          </a>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <Card className="h-full border-blue-500/20 bg-blue-50/50 dark:bg-blue-950/10">
-              <CardContent className="p-8">
-                <div className="text-4xl mb-6">🚀</div>
-                <h3 className="text-xl font-bold mb-4">Who I Am</h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  I&apos;m a full stack developer specialising in React, Next.js,
-                  Node.js, and modern JavaScript tooling. I love turning complex
-                  ideas into simple, usable interfaces.
-                </p>
-              </CardContent>
-            </Card>
-          </motion.div>
+        {/* What I Do Card */}
+        <motion.div
+          className="flex flex-col gap-4 rounded-xl bg-slate-200/50 dark:bg-primary/5 p-5 border border-primary/10 neon-border"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <div className="flex justify-between items-start">
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="material-symbols-outlined text-primary">bolt</span>
+                <p className="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight">What I Do</p>
+              </div>
+              <p className="text-slate-600 dark:text-slate-400 text-sm md:text-base font-normal leading-relaxed">
+                Specializing in high-performance web applications and scalable architecture. I focus on clean code and pixel-perfect implementation.
+              </p>
+            </div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
-            <Card className="h-full border-purple-500/20 bg-purple-50/50 dark:bg-purple-950/10">
-              <CardContent className="p-8">
-                <div className="text-4xl mb-6">⚡</div>
-                <h3 className="text-xl font-bold mb-4">What I Do</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start">
-                    <span className="mr-3 text-primary">▹</span>
-                    <span className="text-muted-foreground">Design & build full-stack web apps (MERN / Next.js)</span>
-                  </li>
-
-                  <li className="flex items-start">
-                    <span className="mr-3 text-primary">▹</span>
-                    <span className="text-muted-foreground">Career planning & technical interview prep</span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </div>
+          <a href="#projects" className="hidden md:flex items-center justify-center rounded-lg h-10 px-6 bg-primary/10 border border-primary text-primary text-sm font-bold tracking-wide w-fit hover:bg-primary hover:text-background-dark transition-all mt-4">
+            <span>View Work</span>
+          </a>
+        </motion.div>
       </div>
+
+      <motion.div
+        className="mt-8 flex justify-center gap-4"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+      >
+        <a href="https://github.com/kartikayshukla17" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 rounded-lg bg-slate-200 dark:bg-slate-800 px-6 py-3 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-primary hover:text-background-dark transition-all w-full md:w-auto">
+          GitHub
+        </a>
+        <a href="https://www.linkedin.com/in/kartikay-shukla-27357a243/" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 rounded-lg bg-[#0A66C2]/10 dark:bg-[#0A66C2]/20 px-6 py-3 text-sm font-bold text-[#0A66C2] dark:text-[#4799E8] hover:bg-[#0A66C2] hover:text-white transition-all w-full md:w-auto">
+          LinkedIn
+        </a>
+      </motion.div>
     </section>
   );
 };

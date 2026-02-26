@@ -1,66 +1,37 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Skill = ({ skills }) => {
-  const getIcon = (category) => {
-    switch (category) {
-      case "Frontend":
-        return "🎨";
-      case "Backend":
-        return "⚙️";
-      case "Tools & Practices":
-        return "🛠️";
-      default:
-        return "💻";
-    }
-  };
-
   return (
-    <section className="py-20 bg-muted/50" id="skills">
-      <div className="container mx-auto px-4">
-        <motion.div
-          className="text-center mb-16"
+    <section className="py-16 px-6 lg:px-12 border-y border-slate-200 dark:border-primary/10 bg-slate-50 dark:bg-slate-900/30 overflow-hidden" id="skills">
+      <div className="mx-auto max-w-7xl">
+        <motion.h4
+          className="text-sm font-bold uppercase tracking-[0.2em] text-center mb-10 text-primary/80"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-3xl font-bold mb-4">Skills</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            A snapshot of the technologies and tools I use regularly.
-          </p>
-        </motion.div>
+          Ecosystem Skills
+        </motion.h4>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {skills.map((group, index) => (
+        {/* We flatten the skills array to show as ecosystem badges to match the requested design */}
+        <div className="flex flex-wrap justify-center gap-4 lg:gap-6">
+          {skills.flatMap((s) => s.items).map((skill, index) => (
             <motion.div
-              key={group.category}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              key={skill}
+              className="flex items-center gap-3 px-6 py-3 bg-white dark:bg-background-dark rounded-xl border border-slate-200 dark:border-primary/10 shadow-sm hover:border-primary/40 transition-colors"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{ duration: 0.4, delay: index * 0.05 }}
             >
-              <Card className="h-full hover:shadow-lg transition-all duration-300 border-border/50">
-                <CardHeader className="flex flex-row items-center gap-4 pb-2">
-                  <div className="text-2xl bg-primary/10 w-10 h-10 rounded-lg flex items-center justify-center">
-                    {getIcon(group.category)}
-                  </div>
-                  <CardTitle className="text-lg">{group.category}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="flex flex-wrap gap-2">
-                    {group.items.map((item) => (
-                      <li
-                        key={item}
-                        className="px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-sm font-medium border border-border/50 hover:bg-primary/5 transition-colors"
-                      >
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
+              <span className="material-symbols-outlined text-primary group-hover:animate-spin">
+                {/* Randomly select an icon based on length just for visual variety if desired, 
+                    or stick to terminal/code/data_object */}
+                {skill.length % 3 === 0 ? 'data_object' : skill.length % 2 === 0 ? 'code' : 'layers'}
+              </span>
+              <span className="text-sm md:text-base font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wider">{skill}</span>
             </motion.div>
           ))}
         </div>

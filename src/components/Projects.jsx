@@ -1,82 +1,83 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ExternalLink, Github } from "lucide-react";
 
 const Projects = ({ projects }) => {
   return (
-    <section className="py-20 bg-background" id="projects">
-      <div className="container mx-auto px-4">
+    <section className="py-12 lg:py-20 px-4 max-w-md md:max-w-7xl mx-auto bg-slate-50 dark:bg-slate-900/20" id="projects">
+      <div>
         <motion.div
-          className="text-center mb-16"
+          className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 md:mb-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-3xl font-bold mb-4">Featured Projects</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Selected work that showcases my passion for building robust and scalable applications.
-          </p>
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="material-symbols-outlined text-primary text-xl hidden md:block">rocket</span>
+              <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold font-display flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary md:hidden">rocket</span>
+                Featured Projects
+              </h2>
+            </div>
+            <p className="text-slate-500 dark:text-slate-400 text-sm md:text-lg leading-relaxed">
+              Exploring the intersection of high-performance engineering and futuristic interface design. Here are some of my recent technical experiments.
+            </p>
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {projects.map((project, index) => (
             <motion.div
               key={project.title}
-              initial={{ opacity: 0, y: 20 }}
+              className="group flex flex-col bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-primary/10 rounded-xl overflow-hidden hover:border-primary/40 transition-all duration-300 shadow-sm hover:shadow-lg"
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <Card className="h-full flex flex-col overflow-hidden group hover:shadow-lg transition-all duration-300 border-border/50">
-                <CardHeader>
-                  <div className="flex justify-between items-start mb-2">
-                    <CardTitle className="text-xl">{project.title}</CardTitle>
-                  </div>
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {project.tech.slice(0, 3).map((t) => (
-                      <span key={t} className="px-2 py-1 rounded-md bg-secondary text-secondary-foreground text-xs font-medium">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                  <CardDescription className="text-sm font-medium text-foreground/80">
-                    {project.tagline}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex-1">
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {project.description}
-                  </p>
-                </CardContent>
-                <CardFooter className="flex gap-4 pt-4 border-t border-border/50">
-                  {project.demo && (
-                    <Button
-                      size="sm"
-                      className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white border-0 shadow-lg shadow-blue-500/20 transition-all duration-300 hover:scale-[1.02]"
-                      asChild
-                    >
-                      <a href={project.demo} target="_blank" rel="noreferrer">
-                        <ExternalLink className="mr-2 h-4 w-4" /> Live Demo
-                      </a>
-                    </Button>
+              <div className="p-8 flex flex-col flex-1 relative">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-[100px] -z-10 transition-transform duration-500 group-hover:scale-110"></div>
+
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {project.tech.slice(0, 3).map((t) => (
+                    <span key={t} className="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full border border-primary/20">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+
+                <h3 className="text-2xl font-bold mb-2 group-hover:text-primary transition-colors">{project.title}</h3>
+                <p className="text-primary text-sm font-medium mb-4 italic">{project.tagline}</p>
+                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-8 flex-1">
+                  {project.description}
+                </p>
+
+                <div className="grid grid-cols-2 gap-4 mt-auto">
+                  {project.demo ? (
+                    <a href={project.demo} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 bg-primary text-background-dark py-3 rounded-lg text-sm font-bold hover:brightness-110 transition-all">
+                      <span className="material-symbols-outlined text-[18px]">rocket_launch</span>
+                      <span>Live Demo</span>
+                    </a>
+                  ) : (
+                    <div className="flex items-center justify-center gap-2 bg-slate-200 dark:bg-slate-800 text-slate-400 py-3 rounded-lg text-sm font-bold cursor-not-allowed">
+                      <span className="material-symbols-outlined text-[18px]">rocket_launch</span>
+                      <span>Live Demo</span>
+                    </div>
                   )}
-                  {project.code && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full border-primary/20 hover:border-primary/50 hover:bg-primary/5 hover:text-primary transition-all duration-300"
-                      asChild
-                    >
-                      <a href={project.code} target="_blank" rel="noreferrer">
-                        <Github className="mr-2 h-4 w-4" /> Source
-                      </a>
-                    </Button>
+                  {project.code ? (
+                    <a href={project.code} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 bg-slate-200 dark:bg-primary/10 text-slate-800 dark:text-slate-100 py-3 rounded-lg text-sm font-bold hover:bg-primary/20 transition-all border border-transparent dark:border-primary/20">
+                      <span className="material-symbols-outlined text-[18px]">code</span>
+                      <span>Source</span>
+                    </a>
+                  ) : (
+                    <div className="flex items-center justify-center gap-2 bg-slate-100 dark:bg-slate-800/50 text-slate-400 py-3 rounded-lg text-sm font-bold cursor-not-allowed border border-transparent dark:border-slate-800">
+                      <span className="material-symbols-outlined text-[18px]">code</span>
+                      <span>Source</span>
+                    </div>
                   )}
-                </CardFooter>
-              </Card>
+                </div>
+              </div>
             </motion.div>
           ))}
         </div>
