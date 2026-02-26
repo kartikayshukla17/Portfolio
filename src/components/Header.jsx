@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 const Header = () => {
   const { theme, toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -70,8 +71,48 @@ const Header = () => {
           >
             Hire Me
           </a>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          >
+            <span className="material-symbols-outlined">
+              {isMenuOpen ? "close" : "menu"}
+            </span>
+          </Button>
         </div>
       </div>
+
+      {/* Mobile Menu Dropdown */}
+      {isMenuOpen && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="md:hidden border-t border-primary/10 bg-background-light dark:bg-background-dark px-6 py-4 shadow-xl"
+        >
+          <nav className="flex flex-col gap-4">
+            {navLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.href}
+                onClick={() => setIsMenuOpen(false)}
+                className="text-base font-medium hover:text-primary transition-colors"
+              >
+                {link.name}
+              </a>
+            ))}
+            <a
+              href="#contact"
+              onClick={() => setIsMenuOpen(false)}
+              className="mt-2 text-center rounded-lg bg-primary px-6 py-3 font-bold text-background-dark hover:brightness-110 transition-all sm:hidden"
+            >
+              Hire Me
+            </a>
+          </nav>
+        </motion.div>
+      )}
     </header>
   );
 };

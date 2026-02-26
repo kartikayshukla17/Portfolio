@@ -34,12 +34,12 @@ const Hero = () => {
           </p>
 
           <div className="flex flex-wrap gap-4">
-            <button className="rounded-lg bg-primary px-8 py-3.5 font-bold text-background-dark transition-all hover:brightness-110 neon-glow">
+            <a href="#contact" className="inline-flex items-center justify-center rounded-lg bg-primary px-8 py-3.5 font-bold text-background-dark transition-all hover:brightness-110 neon-glow">
               Start a Project
-            </button>
-            <button className="rounded-lg border border-slate-700 bg-slate-800 px-8 py-3.5 font-bold text-white transition-all hover:bg-slate-700">
+            </a>
+            <a href="#projects" className="inline-flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800 px-8 py-3.5 font-bold text-white transition-all hover:bg-slate-700">
               View Portfolio
-            </button>
+            </a>
           </div>
         </motion.div>
 
