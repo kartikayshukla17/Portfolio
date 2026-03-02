@@ -3,35 +3,45 @@ import { motion } from "framer-motion";
 
 const Skill = ({ skills }) => {
   return (
-    <section className="py-16 px-6 lg:px-12 border-y border-slate-200 dark:border-primary/10 bg-slate-50 dark:bg-slate-900/30 overflow-hidden" id="skills">
-      <div className="mx-auto max-w-7xl">
-        <motion.h4
-          className="text-sm font-bold uppercase tracking-[0.2em] text-center mb-10 text-primary/80"
+    <section className="py-24 px-6 lg:px-12 border-y border-border/50 bg-background dark:bg-card/30 overflow-hidden relative" id="skills">
+      {/* Subtle Grid Background */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
+
+      <div className="mx-auto max-w-7xl relative z-10 flex flex-col items-center">
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
+          className="text-center mb-16"
         >
-          Ecosystem Skills
-        </motion.h4>
+          <span className="text-primary font-display font-bold text-sm tracking-widest uppercase mb-4 block">02. Arsenal</span>
+          <h2 className="text-4xl md:text-5xl font-extrabold font-display text-foreground">
+            Technology <span className="text-secondary font-black italic">Matrix.</span>
+          </h2>
+        </motion.div>
 
-        {/* We flatten the skills array to show as ecosystem badges to match the requested design */}
-        <div className="flex flex-wrap justify-center gap-4 lg:gap-6">
+        <div className="flex flex-wrap justify-center gap-3 lg:gap-4 max-w-4xl">
           {skills.flatMap((s) => s.items).map((skill, index) => (
             <motion.div
               key={skill}
-              className="flex items-center gap-3 px-6 py-3 bg-white dark:bg-background-dark rounded-xl border border-slate-200 dark:border-primary/10 shadow-sm hover:border-primary/40 transition-colors"
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: index * 0.05 }}
+              className="group relative px-6 py-3 glass-panel aura-border rounded-full hover:border-primary/60 hover:bg-primary/5 transition-all cursor-crosshair overflow-hidden"
+              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{
+                type: "spring",
+                stiffness: 100,
+                damping: 15,
+                delay: index * 0.03
+              }}
             >
-              <span className="material-symbols-outlined text-primary group-hover:animate-spin">
-                {/* Randomly select an icon based on length just for visual variety if desired, 
-                    or stick to terminal/code/data_object */}
-                {skill.length % 3 === 0 ? 'data_object' : skill.length % 2 === 0 ? 'code' : 'layers'}
+              {/* Sweep effect on hover */}
+              <div className="absolute inset-0 w-1/4 h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[200%] skew-x-[-20deg] group-hover:animate-[sweep_1s_ease-in-out]"></div>
+
+              <span className="text-sm md:text-base font-bold font-body text-slate-700 dark:text-slate-300 tracking-wide relative z-10 group-hover:text-primary transition-colors">
+                {skill}
               </span>
-              <span className="text-sm md:text-base font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wider">{skill}</span>
             </motion.div>
           ))}
         </div>

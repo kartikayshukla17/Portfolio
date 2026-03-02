@@ -11,14 +11,14 @@ import project from "./data/project.js";
 
 const App = () => {
   return (
-    <div className="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased transition-colors duration-300 min-h-screen flex flex-col">
+    <div className="bg-background-light dark:bg-background-dark font-body text-slate-900 dark:text-slate-100 antialiased transition-colors duration-300 min-h-screen flex flex-col">
       <Header />
       <main>
         <Hero />
         <About />
         <Skill skills={skills} />
-        <Projects projects={project} />
         <Timeline />
+        <Projects projects={project} />
         <Contact />
       </main>
       <Footer />

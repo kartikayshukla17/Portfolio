@@ -2,6 +2,7 @@ import { useTheme } from "../hooks/useTheme";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { GitHubIcon, LinkedInIcon } from "./ui/BrandIcons";
 
 const Header = () => {
   const { theme, toggleTheme } = useTheme();
@@ -24,10 +25,10 @@ const Header = () => {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full border-b transition-all duration-300 ${scrolled ? "border-primary/20 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md" : "border-transparent bg-transparent py-2"
+      className={`sticky top-0 z-50 w-full border-b transition-all duration-300 ${scrolled ? "border-primary/20 bg-background/80 backdrop-blur-md" : "border-transparent bg-transparent py-1"
         }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-12">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-12 py-3 sm:py-4">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-background-dark">
             <span className="material-symbols-outlined font-bold">terminal</span>
@@ -66,8 +67,26 @@ const Header = () => {
             </motion.span>
           </Button>
           <a
+            href="https://github.com/kartikayshukla17"
+            target="_blank"
+            rel="noreferrer"
+            className="hidden md:flex items-center justify-center h-9 w-9 rounded-lg text-slate-600 dark:text-slate-400 hover:text-primary hover:bg-primary/10 transition-all"
+            aria-label="GitHub"
+          >
+            <GitHubIcon className="w-4 h-4" />
+          </a>
+          <a
+            href="https://www.linkedin.com/in/kartikay-shukla-27357a243/"
+            target="_blank"
+            rel="noreferrer"
+            className="hidden md:flex items-center justify-center h-9 w-9 rounded-lg text-slate-600 dark:text-slate-400 hover:text-secondary hover:bg-secondary/10 transition-all"
+            aria-label="LinkedIn"
+          >
+            <LinkedInIcon className="w-4 h-4" />
+          </a>
+          <a
             href="#contact"
-            className="rounded-full bg-primary px-6 py-2.5 text-sm font-bold text-background-dark hover:brightness-110 transition-all neon-glow hidden sm:inline-block"
+            className="rounded-full bg-primary px-6 py-2.5 text-sm font-bold text-white hover:brightness-110 transition-all neon-glow hidden sm:inline-block"
           >
             Hire Me
           </a>

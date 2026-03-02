@@ -19,11 +19,11 @@ export default {
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
-        "background-light": "#f5f8f8",
-        "background-dark": "#101e22",
+        "background-light": "#f0f1f5",
+        "background-dark": "#110f18",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#0db9f2",
+          DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
@@ -52,7 +52,8 @@ export default {
         },
       },
       fontFamily: {
-        "display": ["Space Grotesk", "sans-serif"]
+        "display": ["Syne", "sans-serif"],
+        "body": ["Epilogue", "sans-serif"]
       },
       borderRadius: {
         lg: "var(--radius)",

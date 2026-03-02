@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ContactProvider, useContact } from "../context/ContactContext";
 import ConfirmationModal from "./ConfirmationModal";
+import { GitHubIcon, LinkedInIcon } from "./ui/BrandIcons";
 
 function ContactForm() {
   const { form, setForm, openModal } = useContact();
@@ -16,60 +17,89 @@ function ContactForm() {
   }
 
   return (
-    <section className="py-12 lg:py-20 px-4 bg-slate-100/50 dark:bg-primary/5" id="contact">
-      <div className="mx-auto max-w-md md:max-w-7xl">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-24 items-start">
+    <section className="relative py-16 sm:py-20 lg:py-24 px-5 sm:px-8 lg:px-12 bg-background-light dark:bg-background-dark overflow-hidden" id="contact">
+      <div className="absolute bottom-0 right-0 w-full h-[400px] bg-gradient-to-t from-primary/5 to-transparent pointer-events-none" />
+
+      <div className="mx-auto max-w-7xl relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-10 sm:mb-14 lg:mb-16"
+        >
+          <span className="text-secondary font-display font-bold text-xs sm:text-sm tracking-widest uppercase mb-3 block">05. Connection</span>
+          <h2 className="text-4xl sm:text-5xl font-extrabold font-display text-foreground mb-3">
+            Initiate <span className="text-primary font-black italic">Contact.</span>
+          </h2>
+          <p className="text-slate-500 dark:text-slate-400 font-body max-w-lg mx-auto text-sm">
+            Have a project in mind? Establish a connection below.
+          </p>
+        </motion.div>
+
+        <div className="grid lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 items-start max-w-6xl mx-auto">
 
           {/* Left Column: Contact Details */}
           <motion.div
-            className="rounded-2xl border border-slate-200 dark:border-primary/10 bg-white dark:bg-background-dark p-6 md:p-8 shadow-2xl dark:shadow-primary/5"
+            className="lg:col-span-5 flex flex-col gap-6"
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.5 }}
           >
-            <div className="flex items-center gap-2 mb-4">
-              <span className="material-symbols-outlined text-primary">contact_support</span>
-              <h2 className="text-2xl md:text-4xl font-bold tracking-tight lg:text-5xl">Get In Touch</h2>
-            </div>
-            <p className="text-sm md:text-lg text-slate-600 dark:text-slate-400 mb-8 max-w-lg">
-              Have a project in mind or just want to say hi?
-            </p>
+            <div className="glass-panel aura-border p-8 rounded-2xl relative overflow-hidden group h-full">
+              <div className="absolute inset-0 bg-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-            <div className="flex items-start gap-3">
-              <span className="material-symbols-outlined text-primary text-xl">location_on</span>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-300">Remote / Global</p>
-            </div>
+              <h3 className="text-2xl font-display font-bold mb-8 text-foreground relative z-10">Signal Coordinates</h3>
 
-            <div className="flex items-start gap-3 mt-4">
-              <span className="material-symbols-outlined text-primary text-xl">mail</span>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-300">kartikayshukla17@gmail.com</p>
-            </div>
+              <div className="flex flex-col gap-6 relative z-10">
+                <div className="flex items-start gap-4">
+                  <div className="h-10 w-10 shrink-0 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
+                    <span className="material-symbols-outlined text-primary text-xl">location_on</span>
+                  </div>
+                  <div>
+                    <p className="text-xs font-display uppercase tracking-wider text-slate-500 mb-1">Base of Operations</p>
+                    <p className="font-body font-medium text-foreground">Remote / Global Node</p>
+                  </div>
+                </div>
 
-            <div className="pt-6">
-              <div className="flex gap-4">
-                <a href="https://github.com/kartikayshukla17" target="_blank" rel="noreferrer" className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-slate-200 dark:bg-slate-800 px-4 py-3 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-primary hover:text-background-dark transition-all">
-                  GitHub
-                </a>
-                <a href="https://www.linkedin.com/in/kartikay-shukla-27357a243/" target="_blank" rel="noreferrer" className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#0A66C2]/10 dark:bg-[#0A66C2]/20 px-4 py-3 text-sm font-bold text-[#0A66C2] dark:text-[#4799E8] hover:bg-[#0A66C2] hover:text-white transition-all">
-                  LinkedIn
-                </a>
+                <div className="flex items-start gap-4">
+                  <div className="h-10 w-10 shrink-0 rounded-full bg-secondary/10 flex items-center justify-center border border-secondary/20">
+                    <span className="material-symbols-outlined text-secondary text-xl">mail</span>
+                  </div>
+                  <div>
+                    <p className="text-xs font-display uppercase tracking-wider text-slate-500 mb-1">Direct Line</p>
+                    <a href="mailto:kartikayshukla17@gmail.com" className="font-body font-medium text-foreground hover:text-secondary transition-colors">kartikayshukla17@gmail.com</a>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-12 pt-8 border-t border-border/50 relative z-10">
+                <p className="text-xs font-display uppercase tracking-wider text-slate-500 mb-4">External Networks</p>
+                <div className="flex gap-4">
+                  <a href="https://github.com/kartikayshukla17" target="_blank" rel="noreferrer" className="flex items-center justify-center h-12 w-12 rounded-xl bg-background border border-border hover:border-primary hover:text-primary transition-all group/social">
+                    <GitHubIcon className="w-5 h-5 group-hover/social:scale-110 transition-transform" />
+                  </a>
+                  <a href="https://www.linkedin.com/in/kartikay-shukla-27357a243/" target="_blank" rel="noreferrer" className="flex items-center justify-center h-12 w-12 rounded-xl bg-background border border-border hover:border-secondary hover:text-secondary transition-all group/social">
+                    <LinkedInIcon className="w-5 h-5 group-hover/social:scale-110 transition-transform" />
+                  </a>
+                </div>
               </div>
             </div>
           </motion.div>
 
           {/* Right Column: Message Form */}
           <motion.div
-            className="rounded-2xl border border-slate-200 dark:border-primary/10 bg-white dark:bg-background-dark p-8 shadow-2xl dark:shadow-primary/5"
+            className="lg:col-span-7 glass-panel aura-border p-8 rounded-2xl relative"
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label htmlFor="name" className="text-sm font-medium text-slate-500">Full Name</label>
+                  <label htmlFor="name" className="text-xs font-display uppercase tracking-wider text-slate-500">Full Name</label>
                   <input
                     id="name"
                     name="name"
@@ -78,11 +108,11 @@ function ContactForm() {
                     value={form.name}
                     onChange={handleChange}
                     placeholder="John Doe"
-                    className="w-full rounded-lg border border-slate-200 dark:border-primary/20 bg-slate-50 dark:bg-primary/5 p-3 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                    className="w-full rounded-xl border border-border bg-background/50 p-4 text-foreground font-body placeholder:text-slate-500 focus:border-primary focus:ring-1 focus:ring-primary focus:bg-background outline-none transition-all"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="email" className="text-sm font-medium text-slate-500">Email Address</label>
+                  <label htmlFor="email" className="text-xs font-display uppercase tracking-wider text-slate-500">Email Address</label>
                   <input
                     id="email"
                     name="email"
@@ -91,12 +121,12 @@ function ContactForm() {
                     value={form.email}
                     onChange={handleChange}
                     placeholder="john@example.com"
-                    className="w-full rounded-lg border border-slate-200 dark:border-primary/20 bg-slate-50 dark:bg-primary/5 p-3 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                    className="w-full rounded-xl border border-border bg-background/50 p-4 text-foreground font-body placeholder:text-slate-500 focus:border-secondary focus:ring-1 focus:ring-secondary focus:bg-background outline-none transition-all"
                   />
                 </div>
               </div>
               <div className="space-y-2">
-                <label htmlFor="subject" className="text-sm font-medium text-slate-500">Subject</label>
+                <label htmlFor="subject" className="text-xs font-display uppercase tracking-wider text-slate-500">Subject</label>
                 <input
                   id="subject"
                   name="subject"
@@ -105,11 +135,11 @@ function ContactForm() {
                   value={form.subject}
                   onChange={handleChange}
                   placeholder="Project Inquiry"
-                  className="w-full rounded-lg border border-slate-200 dark:border-primary/20 bg-slate-50 dark:bg-primary/5 p-3 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                  className="w-full rounded-xl border border-border bg-background/50 p-4 text-foreground font-body placeholder:text-slate-500 focus:border-primary focus:ring-1 focus:ring-primary focus:bg-background outline-none transition-all"
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="message" className="text-sm font-medium text-slate-500">Message</label>
+                <label htmlFor="message" className="text-xs font-display uppercase tracking-wider text-slate-500">Transmission Log</label>
                 <textarea
                   id="message"
                   name="message"
@@ -117,17 +147,18 @@ function ContactForm() {
                   required
                   value={form.message}
                   onChange={handleChange}
-                  placeholder="Tell me about your project..."
-                  className="w-full rounded-lg border border-slate-200 dark:border-primary/20 bg-slate-50 dark:bg-primary/5 p-3 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all resize-none"
+                  placeholder="Describe your vision..."
+                  className="w-full rounded-xl border border-border bg-background/50 p-4 text-foreground font-body placeholder:text-slate-500 focus:border-secondary focus:ring-1 focus:ring-secondary focus:bg-background outline-none transition-all resize-none"
                 ></textarea>
               </div>
 
               <button
                 type="submit"
-                className="w-full rounded-lg bg-primary px-8 py-4 font-bold text-background-dark hover:brightness-110 transition-all neon-glow flex items-center justify-center gap-2"
+                className="w-full rounded-xl bg-primary px-8 py-5 font-display font-bold text-background-dark hover:brightness-110 transition-all aura-glow flex items-center justify-center gap-3 overflow-hidden group relative mt-4"
               >
-                Send Message
-                <span className="material-symbols-outlined">send</span>
+                <span className="relative z-10">Transmit Signal</span>
+                <span className="material-symbols-outlined relative z-10 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">send</span>
+                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></div>
               </button>
             </form>
           </motion.div>

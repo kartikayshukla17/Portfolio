@@ -3,29 +3,33 @@ import { motion } from "framer-motion";
 
 const Footer = () => {
   return (
-    <footer className="border-t border-slate-200 dark:border-primary/10 bg-background-light dark:bg-background-dark py-12 px-6 lg:px-12 overflow-hidden">
+    <footer className="border-t border-border bg-background dark:bg-black/50 py-12 px-6 lg:px-12 overflow-hidden relative">
+      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
+
       <motion.div
-        className="mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between gap-6"
+        className="mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between gap-6 relative z-10"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
       >
 
-        <div className="flex items-center gap-3 opacity-50">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-background-dark">
-            <span className="material-symbols-outlined text-sm font-bold">terminal</span>
+        <div className="flex items-center gap-3 opacity-70 hover:opacity-100 transition-opacity">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-white">
+            <span className="material-symbols-outlined text-base font-bold">terminal</span>
           </div>
-          <span className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100">DevPortfolio</span>
+          <span className="text-lg font-display font-bold tracking-tight text-foreground">
+            Kartikay<span className="text-primary">.dev</span>
+          </span>
         </div>
 
-        <p className="text-sm text-slate-500 dark:text-slate-400 order-3 md:order-none text-center">
-          © 2026 Kartikay Shukla. All rights reserved. Built with <span className="text-primary">♥</span> and Coffee.
+        <p className="text-sm font-body text-slate-500 dark:text-slate-400 order-3 md:order-none text-center">
+          © {new Date().getFullYear()} Kartikay Shukla. Engineered with <span className="text-primary hover:animate-pulse inline-block">♥</span> and precision.
         </p>
 
-        <div className="flex gap-6">
-          <a href="#" className="text-xs font-medium text-slate-500 hover:text-primary transition-colors">Privacy Policy</a>
-          <a href="#" className="text-xs font-medium text-slate-500 hover:text-primary transition-colors">Terms of Service</a>
+        <div className="flex gap-6 font-body text-sm">
+          <a href="#" className="font-medium text-slate-500 hover:text-primary transition-colors">Coordinates</a>
+          <a href="#" className="font-medium text-slate-500 hover:text-secondary transition-colors">Protocols</a>
         </div>
 
       </motion.div>
