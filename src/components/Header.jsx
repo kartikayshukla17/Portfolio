@@ -18,8 +18,8 @@ const Header = () => {
   const navLinks = [
     { name: "About", href: "#about" },
     { name: "Skills", href: "#skills" },
-    { name: "Projects", href: "#projects" },
-    { name: "Journey", href: "#timeline" }, // Changed from Timeline to Journey for user consistency if desired, but id is timeline
+    { name: "Journey", href: "#timeline" }, // Section 03
+    { name: "Projects", href: "#projects" }, // Section 04
     { name: "Contact", href: "#contact" },
   ];
 
