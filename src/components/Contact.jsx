@@ -30,7 +30,7 @@ function ContactForm() {
         >
           <span className="text-secondary font-display font-bold text-xs sm:text-sm tracking-widest uppercase mb-3 block">05. Connection</span>
           <h2 className="text-4xl sm:text-5xl font-extrabold font-display text-foreground mb-3">
-            Initiate <span className="text-primary font-black italic">Contact.</span>
+            Get in <span className="text-primary font-black italic">Touch.</span>
           </h2>
           <p className="text-slate-500 dark:text-slate-400 font-body max-w-lg mx-auto text-sm">
             Have a project in mind? Establish a connection below.
@@ -50,7 +50,7 @@ function ContactForm() {
             <div className="glass-panel aura-border p-8 rounded-2xl relative overflow-hidden group h-full">
               <div className="absolute inset-0 bg-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-              <h3 className="text-2xl font-display font-bold mb-8 text-foreground relative z-10">Signal Coordinates</h3>
+              <h3 className="text-2xl font-display font-bold mb-8 text-foreground relative z-10">Contact Details</h3>
 
               <div className="flex flex-col gap-6 relative z-10">
                 <div className="flex items-start gap-4">
@@ -58,8 +58,8 @@ function ContactForm() {
                     <span className="material-symbols-outlined text-primary text-xl">location_on</span>
                   </div>
                   <div>
-                    <p className="text-xs font-display uppercase tracking-wider text-slate-500 mb-1">Base of Operations</p>
-                    <p className="font-body font-medium text-foreground">Remote / Global Node</p>
+                    <p className="text-xs font-display uppercase tracking-wider text-slate-500 mb-1">Location</p>
+                    <p className="font-body font-medium text-foreground">Remote / Global</p>
                   </div>
                 </div>
 
@@ -68,7 +68,7 @@ function ContactForm() {
                     <span className="material-symbols-outlined text-secondary text-xl">mail</span>
                   </div>
                   <div>
-                    <p className="text-xs font-display uppercase tracking-wider text-slate-500 mb-1">Direct Line</p>
+                    <p className="text-xs font-display uppercase tracking-wider text-slate-500 mb-1">Email</p>
                     <a href="mailto:kartikayshukla17@gmail.com" className="font-body font-medium text-foreground hover:text-secondary transition-colors">kartikayshukla17@gmail.com</a>
                   </div>
                 </div>
