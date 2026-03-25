@@ -18,10 +18,9 @@ const skills = [
     category: "Tools & Practices",
     items: [
       "Git & GitHub",
-      "VS Code",
       "CI/CD basics",
-      "Code Reviews",
-
+      "GSAP",
+      "Lenis",
     ],
   },
 ];

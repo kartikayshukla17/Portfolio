@@ -19,7 +19,7 @@ export default {
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
-        "background-light": "#f0f1f5",
+        "background-light": "#eef0f5",
         "background-dark": "#110f18",
         foreground: "hsl(var(--foreground))",
         primary: {
@@ -52,8 +52,8 @@ export default {
         },
       },
       fontFamily: {
-        "display": ["Syne", "sans-serif"],
-        "body": ["Epilogue", "sans-serif"]
+        "display": ["Playfair Display", "serif"],
+        "body": ["Inter", "sans-serif"]
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -69,10 +69,15 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "star-btn": {
+          "0%":   { "offset-distance": "0%" },
+          "100%": { "offset-distance": "100%" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "star-btn": "star-btn calc(var(--duration) * 1s) linear infinite",
       },
     },
   },

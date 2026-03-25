@@ -1,12 +1,21 @@
 const project = [
   {
-    title: "HealthCare+",
-    tagline: "Comprehensive healthcare management platform.",
+    title: "CruxIO",
+    tagline: "Crash Investigation Intelligence Platform.",
     description:
-      "A comprehensive platform connecting patients and doctors. Features include appointment booking, real-time slot availability, water intake tracking, and an AI Chatbot (RAG) for personalized medical queries.",
-    tech: ["React", "RAG (Gemini)", "Node.js", "MongoDB", "Redis", "Docker"],
-    code: "https://github.com/kartikayshukla17/HeathCare-",
-    demo: "",
+      "Enhances Firebase Crashlytics with AI-powered root cause analysis, GitHub commit correlation, regression detection, and smart prioritization — reducing crash investigation time from hours to minutes. Supports iOS, Android, Flutter, and React Native.",
+    tech: ["Next.js 16", "TypeScript", "Supabase", "Claude AI", "Firebase"],
+    code: "",
+    demo: "https://cruxio.io/",
+  },
+  {
+    title: "B2B Marketplace",
+    tagline: "Full-stack B2B service & product marketplace.",
+    description:
+      "A marketplace where users can offer services/products and connect commercially. Features role-based access (Buyer, Seller, Admin), full order lifecycle management, JWT auth, rate limiting, and server-side pagination.",
+    tech: ["Next.js 15", "TypeScript", "Express", "MongoDB", "Prisma"],
+    code: "https://github.com/kartikayshukla17/Marketplace-assignment",
+    demo: "https://marketplace-assignment-bsc1.vercel.app/",
   },
   {
     title: "FirmCommand",
@@ -16,6 +25,15 @@ const project = [
     tech: ["React", "Socket.io", "Node.js", "Express", "MongoDB", "JWT"],
     code: "https://github.com/kartikayshukla17/FirmCommand",
     demo: "https://firmcommand-frontend.onrender.com/",
+  },
+  {
+    title: "HealthCare+",
+    tagline: "Comprehensive healthcare management platform.",
+    description:
+      "A comprehensive platform connecting patients and doctors. Features include appointment booking, real-time slot availability, water intake tracking, and an AI Chatbot (RAG) for personalized medical queries.",
+    tech: ["React", "RAG (Gemini)", "Node.js", "MongoDB", "Redis", "Docker"],
+    code: "https://github.com/kartikayshukla17/HeathCare-",
+    demo: "",
   },
   {
     title: "VisionaryAI",

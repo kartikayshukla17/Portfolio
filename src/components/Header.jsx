@@ -1,39 +1,56 @@
 import { useTheme } from "../hooks/useTheme";
+import { useActiveSection } from "../hooks/useActiveSection";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { GitHubIcon, LinkedInIcon } from "./ui/BrandIcons";
+import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
+import { memo, useState, useEffect, useCallback } from "react";
 
-const Header = () => {
+const HireMeButton = () => (
+  <div className="hidden sm:block">
+    <LiquidMetalButton
+      label="Hire Me"
+      width={100}
+      innerBackground="hsl(var(--accent))"
+      textColor="hsl(var(--accent-foreground))"
+      onClick={() => {
+        const el = document.getElementById("contact");
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }}
+    />
+  </div>
+);
+
+const navLinks = [
+  { name: "About", href: "#about", section: "about" },
+  { name: "Skills", href: "#skills", section: "skills" },
+  { name: "Journey", href: "#journey", section: "journey" },
+  { name: "Projects", href: "#projects", section: "projects" },
+  { name: "Contact", href: "#contact", section: "contact" },
+];
+
+const Header = memo(() => {
   const { theme, toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const activeSection = useActiveSection();
+
+  const handleScroll = useCallback(() => setScrolled(window.scrollY > 20), []);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const navLinks = [
-    { name: "About", href: "#about" },
-    { name: "Skills", href: "#skills" },
-    { name: "Journey", href: "#timeline" }, // Section 03
-    { name: "Projects", href: "#projects" }, // Section 04
-    { name: "Contact", href: "#contact" },
-  ];
+  }, [handleScroll]);
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full border-b transition-all duration-300 ${scrolled ? "border-primary/20 bg-background/80 backdrop-blur-md" : "border-transparent bg-transparent py-1"
+      className={`sticky top-0 z-50 w-full border-b transition-all duration-300 ${scrolled ? "border-primary/10 bg-background/30 backdrop-blur-xl" : "border-transparent bg-transparent py-1"
         }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-12 py-3 sm:py-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-background-dark">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-foreground text-background">
             <span className="material-symbols-outlined font-bold">terminal</span>
           </div>
-          <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Kartikay.<span className="text-primary">dev</span></span>
+          <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Kartikay.<span className="text-accent">dev</span></span>
         </div>
 
         <nav className="hidden md:flex items-center gap-10">
@@ -41,7 +58,11 @@ const Header = () => {
             <a
               key={link.name}
               href={link.href}
-              className="text-sm font-medium hover:text-primary transition-colors hover:underline underline-offset-4"
+              className={`text-sm font-medium transition-colors duration-300 ${
+                activeSection === link.section
+                  ? "text-foreground border-b-2 border-accent pb-0.5"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
             >
               {link.name}
             </a>
@@ -55,41 +76,16 @@ const Header = () => {
             onClick={toggleTheme}
             className="rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
-            <motion.span
-              initial={false}
-              animate={{ rotate: theme === 'light' ? 0 : 360 }}
-              transition={{ duration: 0.5 }}
-              className="flex items-center justify-center text-slate-600 dark:text-slate-300"
+            <span
+              className="flex items-center justify-center text-slate-600 dark:text-slate-300 transition-transform duration-500"
+              style={{ transform: `rotate(${theme === 'light' ? 0 : 360}deg)` }}
             >
               <span className="material-symbols-outlined text-[22px]">
                 {theme === 'light' ? 'dark_mode' : 'light_mode'}
               </span>
-            </motion.span>
+            </span>
           </Button>
-          <a
-            href="https://github.com/kartikayshukla17"
-            target="_blank"
-            rel="noreferrer"
-            className="hidden md:flex items-center justify-center h-9 w-9 rounded-lg text-slate-600 dark:text-slate-400 hover:text-primary hover:bg-primary/10 transition-all"
-            aria-label="GitHub"
-          >
-            <GitHubIcon className="w-4 h-4" />
-          </a>
-          <a
-            href="https://www.linkedin.com/in/kartikay-shukla-27357a243/"
-            target="_blank"
-            rel="noreferrer"
-            className="hidden md:flex items-center justify-center h-9 w-9 rounded-lg text-slate-600 dark:text-slate-400 hover:text-secondary hover:bg-secondary/10 transition-all"
-            aria-label="LinkedIn"
-          >
-            <LinkedInIcon className="w-4 h-4" />
-          </a>
-          <a
-            href="#contact"
-            className="rounded-full bg-primary px-6 py-2.5 text-sm font-bold text-white hover:brightness-110 transition-all neon-glow hidden sm:inline-block"
-          >
-            Hire Me
-          </a>
+          <HireMeButton />
 
           <Button
             variant="ghost"
@@ -106,18 +102,18 @@ const Header = () => {
 
       {/* Mobile Menu Dropdown */}
       {isMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="md:hidden border-t border-primary/10 bg-background-light dark:bg-background-dark px-6 py-4 shadow-xl"
-        >
+        <div className="md:hidden border-t border-primary/10 bg-background-light dark:bg-background-dark px-6 py-4 shadow-xl animate-[fadeSlideDown_0.2s_ease-out]">
           <nav className="flex flex-col gap-4">
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
                 onClick={() => setIsMenuOpen(false)}
-                className="text-base font-medium hover:text-primary transition-colors"
+                className={`text-base font-medium transition-colors duration-300 ${
+                  activeSection === link.section
+                    ? "text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
               >
                 {link.name}
               </a>
@@ -125,15 +121,15 @@ const Header = () => {
             <a
               href="#contact"
               onClick={() => setIsMenuOpen(false)}
-              className="mt-2 text-center rounded-lg bg-primary px-6 py-3 font-bold text-background-dark hover:brightness-110 transition-all sm:hidden"
+              className="mt-2 text-center rounded-full bg-accent px-6 py-3 font-bold text-accent-foreground hover:opacity-85 transition-opacity duration-300 sm:hidden"
             >
               Hire Me
             </a>
           </nav>
-        </motion.div>
+        </div>
       )}
     </header>
   );
-};
+});
 
 export default Header;
