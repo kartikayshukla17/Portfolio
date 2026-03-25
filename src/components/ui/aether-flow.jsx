@@ -153,10 +153,14 @@ const AetherFlow = () => {
 
     let mouseX = 0, mouseY = 0;
 
-    // 1x DPR — background shaders don't need retina resolution
+    // Lower resolution on mobile — the heavy FBM doesn't need full res on small screens
+    const isMobile = window.innerWidth < 640;
+    const renderScale = isMobile ? 0.5 : 1;
+    const activeOpacity = isMobile ? "0.55" : "1";
+
     const resize = () => {
-      canvas.width  = canvas.clientWidth;
-      canvas.height = canvas.clientHeight;
+      canvas.width  = Math.round(canvas.clientWidth * renderScale);
+      canvas.height = Math.round(canvas.clientHeight * renderScale);
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.uniform2f(resLoc, canvas.width, canvas.height);
       mouseX = canvas.width / 2;
@@ -190,7 +194,7 @@ const AetherFlow = () => {
 
     const startLoop = () => {
       if (inView && !rafId) {
-        canvas.style.opacity = "1";
+        canvas.style.opacity = activeOpacity;
         rafId = requestAnimationFrame(draw);
       }
     };
@@ -209,7 +213,7 @@ const AetherFlow = () => {
     }, { threshold: 0 });
     io.observe(section);
 
-    canvas.style.opacity = "1";
+    canvas.style.opacity = activeOpacity;
 
     return () => {
       cancelAnimationFrame(rafId);

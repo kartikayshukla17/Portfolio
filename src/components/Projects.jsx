@@ -117,24 +117,21 @@ const Projects = memo(({ projects }) => {
     return () => mq.removeEventListener("change", handler);
   }, []);
 
-  // Desktop: single progress-driven ScrollTrigger
+  // Desktop: progress-driven ScrollTrigger (index via round to align with snap positions)
   useEffect(() => {
     if (!isDesktop) return;
+    const n = projects.length;
     const trigger = ScrollTrigger.create({
       trigger: outerRef.current,
       start: "top top",
       end: "bottom bottom",
       onUpdate: (self) => {
-        const idx = Math.min(
-          projects.length - 1,
-          Math.floor(self.progress * projects.length)
-        );
+        const idx = Math.min(n - 1, Math.round(self.progress * (n - 1)));
         setActive(idx);
 
-        // Animate progress bar with GSAP easing
         if (progressRef.current) {
           gsap.to(progressRef.current, {
-            height: `${((idx + 1) / projects.length) * 100}%`,
+            height: `${((idx + 1) / n) * 100}%`,
             duration: 0.6,
             ease: EASE,
             overwrite: true,
@@ -145,6 +142,84 @@ const Projects = memo(({ projects }) => {
     });
     ScrollTrigger.refresh();
     return () => trigger.kill();
+  }, [isDesktop, projects]);
+
+  // Desktop: wheel-driven snap — intercept scroll inside the pinned section,
+  // accumulate delta until a threshold is hit, then lenis.scrollTo the next project.
+  useEffect(() => {
+    if (!isDesktop) return;
+
+    const section = outerRef.current;
+    const n = projects.length;
+    const THRESHOLD = 70;          // accumulated px before we snap
+    const LOCK_MS = 850;           // cooldown between snaps
+    let accumulated = 0;
+    let locked = false;
+    let decayTimer = null;
+
+    // Derive current snap index from scroll position (no stale-closure issues)
+    const currentIndex = () => {
+      const rect = section.getBoundingClientRect();
+      const scrollRange = section.offsetHeight - window.innerHeight;
+      const progress = Math.max(0, Math.min(1, -rect.top / scrollRange));
+      return Math.round(progress * (n - 1));
+    };
+
+    const scrollToIndex = (i) => {
+      const scrollRange = section.offsetHeight - window.innerHeight;
+      const target = section.offsetTop + (i / (n - 1)) * scrollRange;
+      const lenis = window.__lenis;
+      if (lenis) {
+        lenis.stop();          // kill any existing momentum
+        lenis.start();
+        lenis.scrollTo(target, {
+          duration: 1.0,
+          easing: (t) => 1 - Math.pow(1 - t, 4),
+        });
+      } else {
+        window.scrollTo({ top: target, behavior: "smooth" });
+      }
+    };
+
+    const onWheel = (e) => {
+      const rect = section.getBoundingClientRect();
+      // Only intercept while the sticky container is actually sticking
+      const sticking = rect.top <= 1 && rect.bottom >= window.innerHeight - 1;
+      if (!sticking) { accumulated = 0; return; }
+
+      const cur = currentIndex();
+
+      // At boundaries, let normal scroll through so user can leave the section
+      if ((cur === 0 && e.deltaY < 0) || (cur === n - 1 && e.deltaY > 0)) {
+        accumulated = 0;
+        return;
+      }
+
+      e.preventDefault();
+      if (locked) return;
+
+      accumulated += e.deltaY;
+      clearTimeout(decayTimer);
+      decayTimer = setTimeout(() => { accumulated = 0; }, 200);
+
+      if (Math.abs(accumulated) >= THRESHOLD) {
+        const dir = accumulated > 0 ? 1 : -1;
+        const next = Math.max(0, Math.min(n - 1, cur + dir));
+        accumulated = 0;
+
+        if (next !== cur) {
+          locked = true;
+          scrollToIndex(next);
+          setTimeout(() => { locked = false; accumulated = 0; }, LOCK_MS);
+        }
+      }
+    };
+
+    section.addEventListener("wheel", onWheel, { passive: false });
+    return () => {
+      section.removeEventListener("wheel", onWheel);
+      clearTimeout(decayTimer);
+    };
   }, [isDesktop, projects]);
 
   // Desktop: initial entrance animation when section scrolls into view
@@ -257,13 +332,22 @@ const Projects = memo(({ projects }) => {
     return () => ctx.revert();
   }, [isDesktop]);
 
-  // Click list item → smooth scroll
+  // Click list item → snap to that project via Lenis
   const scrollToProject = useCallback((i) => {
-    if (!outerRef.current) return;
-    const top =
-      outerRef.current.getBoundingClientRect().top + window.scrollY + i * window.innerHeight;
-    window.scrollTo({ top, behavior: "smooth" });
-  }, []);
+    const section = outerRef.current;
+    if (!section) return;
+    const scrollRange = section.offsetHeight - window.innerHeight;
+    const target = section.offsetTop + (i / (projects.length - 1)) * scrollRange;
+    const lenis = window.__lenis;
+    if (lenis) {
+      lenis.scrollTo(target, {
+        duration: 1.0,
+        easing: (t) => 1 - Math.pow(1 - t, 4),
+      });
+    } else {
+      window.scrollTo({ top: target, behavior: "smooth" });
+    }
+  }, [projects.length]);
 
   return (
     <section
