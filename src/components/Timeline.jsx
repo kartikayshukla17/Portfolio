@@ -1,7 +1,21 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { EASE } from "../utils/motion";
 
 const Timeline = () => {
+  const sectionRef = useRef(null);
+
+  // Track scroll through the section.
+  // 0 = section top hits 80% down viewport (just entering from bottom)
+  // 1 = section bottom hits 50% down viewport (fully in view, user reading)
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start 0.8", "end 0.5"],
+  });
+
+  // Line draws downward as you scroll through the section
+  const lineScaleY = useTransform(scrollYProgress, [0, 1], [0, 1]);
+
   const timelineItems = [
     {
       year: "2025",
@@ -21,28 +35,30 @@ const Timeline = () => {
 
   return (
     <section
-      className="relative py-16 sm:py-20 lg:py-24 px-5 sm:px-8 lg:px-12 overflow-hidden bg-background-light dark:bg-background-dark"
+      ref={sectionRef}
+      className="relative py-24 sm:py-32 lg:py-40 px-5 sm:px-8 lg:px-12 overflow-hidden bg-transparent"
       id="journey"
     >
-      <div className="absolute top-1/4 left-0 h-[200px] w-[200px] sm:h-[300px] sm:w-[300px] rounded-full bg-primary/10 blur-[80px] sm:blur-[120px] -z-10 pointer-events-none" />
-
       <div className="mx-auto max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.7, ease: EASE }}
           className="text-center mb-12 sm:mb-16 lg:mb-20"
         >
-          <span className="text-secondary font-display font-bold text-xs sm:text-sm tracking-widest uppercase mb-3 block">03. Evolution</span>
-          <h2 className="text-4xl sm:text-5xl font-extrabold font-display text-foreground">
-            The <span className="text-primary font-black italic">Journey.</span>
+          <span className="text-accent font-display font-bold text-xs sm:text-sm tracking-widest uppercase mb-3 block">03. Evolution</span>
+          <h2 className="text-4xl sm:text-5xl font-bold font-display text-foreground">
+            The <span className="text-muted-foreground font-normal italic">Journey.</span>
           </h2>
         </motion.div>
 
         <div className="relative">
-          {/* Vertical line — left on mobile, centered on desktop */}
-          <div className="absolute left-5 sm:left-6 md:left-1/2 h-full w-0.5 md:-translate-x-1/2 bg-gradient-to-b from-primary/50 via-secondary/50 to-transparent" />
+          {/* Vertical line — scaleY draws from top as you scroll */}
+          <motion.div
+            className="absolute left-5 sm:left-6 md:left-1/2 h-full w-0.5 md:-translate-x-1/2 bg-gradient-to-b from-accent/40 via-border to-transparent"
+            style={{ scaleY: lineScaleY, transformOrigin: "top center" }}
+          />
 
           <div className="space-y-10 sm:space-y-14 md:space-y-20">
             {timelineItems.map((item, index) => (
@@ -52,13 +68,13 @@ const Timeline = () => {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.5, delay: 0.1 }}
+                transition={{ duration: 0.8, ease: EASE, delay: 0.1 }}
               >
                 {/* Content */}
                 <div className={`flex w-full md:w-[45%] flex-col ${index % 2 === 0 ? "md:items-end md:text-right" : "md:items-start md:text-left"}`}>
-                  <span className="text-secondary font-display font-bold mb-1.5 tracking-widest text-xs sm:text-sm">{item.year}</span>
+                  <span className="text-accent font-display font-bold mb-1.5 tracking-widest text-xs sm:text-sm">{item.year}</span>
                   <h3 className="text-xl sm:text-2xl font-bold font-display text-foreground mb-1">{item.title}</h3>
-                  <p className="text-primary/80 font-medium mb-3 text-xs sm:text-sm uppercase tracking-wide">{item.company}</p>
+                  <p className="text-muted-foreground font-medium mb-3 text-xs sm:text-sm uppercase tracking-wide">{item.company}</p>
 
                   <div className="glass-panel aura-border p-4 sm:p-6 rounded-2xl">
                     <p className="text-slate-600 dark:text-slate-400 font-body leading-relaxed text-sm">{item.description}</p>
@@ -66,7 +82,7 @@ const Timeline = () => {
                 </div>
 
                 {/* Node */}
-                <div className="absolute left-5 sm:left-6 md:left-1/2 z-10 flex h-10 w-10 sm:h-12 sm:w-12 -translate-x-1/2 items-center justify-center rounded-full border-4 border-background bg-primary text-white shadow-[0_0_15px_rgba(162,119,255,0.5)] group-hover:scale-110 group-hover:bg-secondary transition-all duration-300">
+                <div className="absolute left-5 sm:left-6 md:left-1/2 z-10 flex h-10 w-10 sm:h-12 sm:w-12 -translate-x-1/2 items-center justify-center rounded-full border-4 border-background bg-accent text-accent-foreground shadow-[0_0_15px_hsl(38_90%_55%/0.4)] transition-all duration-300">
                   <span className="material-symbols-outlined text-base sm:text-lg">{item.icon}</span>
                 </div>
 

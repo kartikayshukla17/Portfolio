@@ -19,7 +19,7 @@ export default {
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
-        "background-light": "#f0f1f5",
+        "background-light": "#eef0f5",
         "background-dark": "#110f18",
         foreground: "hsl(var(--foreground))",
         primary: {
@@ -52,8 +52,8 @@ export default {
         },
       },
       fontFamily: {
-        "display": ["Syne", "sans-serif"],
-        "body": ["Epilogue", "sans-serif"]
+        "display": ["Playfair Display", "serif"],
+        "body": ["Inter", "sans-serif"]
       },
       borderRadius: {
         lg: "var(--radius)",

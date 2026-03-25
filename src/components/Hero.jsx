@@ -1,94 +1,124 @@
-import React from "react";
-import { motion } from "framer-motion";
-import NetworkBackground from "./ui/NetworkBackground";
-import { useTheme } from "../hooks/useTheme";
+import React, { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { EASE } from "../utils/motion";
+import ShaderCanvas from "./ui/ShaderCanvas";
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.18, delayChildren: 0.3 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 36 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { type: "spring", stiffness: 80, damping: 18 },
-  },
-};
+// Word-mask reveal — only GPU-composited properties (transform + opacity)
+// overflow-hidden on each word wrapper acts as the clip mask
+const wordReveal = (delay) => ({
+  initial: { y: "110%" },
+  animate: { y: 0 },
+  transition: { duration: 0.8, ease: EASE, delay },
+});
 
 const Hero = () => {
-  const { theme } = useTheme();
+  const sectionRef = useRef(null);
+
+  // Track how far the section has scrolled out of the viewport.
+  // scrollYProgress: 0 = section top at viewport top, 1 = section bottom at viewport top.
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  // Map scroll progress → visual values (MotionValues: no re-renders, GPU only)
+  const y = useTransform(scrollYProgress, [0, 1], [0, -90]);
+  const opacity = useTransform(scrollYProgress, [0, 0.45], [1, 0]);
 
   return (
     <section
-      className="relative flex min-h-screen items-center overflow-hidden bg-background-light dark:bg-[#0e0e12] pt-20 pb-16"
+      ref={sectionRef}
+      className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-transparent pt-40 pb-48"
       id="home"
     >
-      <div className="absolute inset-0 pointer-events-none z-0">
-        <NetworkBackground theme={theme} />
-      </div>
+      {/* Shader fills the section; IntersectionObserver inside pauses it when offscreen */}
+      <ShaderCanvas />
 
-      <div className="mx-auto flex max-w-7xl flex-col justify-center w-full min-h-[70vh] px-4 sm:px-8 z-10 pointer-events-none">
+      <motion.div
+        style={{ y, opacity }}
+        className="flex w-full max-w-3xl mx-auto flex-col z-10 text-center items-center pointer-events-none px-4 sm:px-8"
+      >
 
-        {/* Copy */}
+        {/* Status dot */}
         <motion.div
-          className="flex w-full flex-col z-10 text-left items-start pointer-events-none"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
+          className="mb-6 inline-flex w-fit items-center gap-2.5"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: EASE, delay: 0.1 }}
         >
-          {/* Status dot */}
-          <motion.div variants={itemVariants} className="mb-6 inline-flex w-fit items-center gap-2.5">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-secondary opacity-60" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-secondary" />
-            </span>
-            <span className="text-[10px] sm:text-[11px] font-body font-semibold uppercase tracking-[0.22em] text-secondary/80">
-              Kartikay Shukla &mdash; Available
-            </span>
-          </motion.div>
-
-          {/* Headline */}
-          <motion.h1
-            variants={itemVariants}
-            className="mb-4 sm:mb-5 font-display font-extrabold tracking-tight leading-[1.05]"
-          >
-            <span className="block text-[clamp(2.5rem,8vw,7rem)] text-foreground dark:text-white">Precision</span>
-            <span className="block text-[clamp(2.5rem,8vw,7rem)] text-foreground dark:text-white">Engineering,</span>
-            <span className="block text-[clamp(2.5rem,8vw,7rem)] text-primary dark:text-[#7c5cfc] italic">Felt.</span>
-          </motion.h1>
-
-          <motion.p
-            variants={itemVariants}
-            className="mb-8 sm:mb-10 max-w-[420px] text-[14px] sm:text-[15px] text-slate-600 dark:text-[#888] font-body leading-[1.6] sm:leading-[1.7]"
-          >
-            Full-stack developer who treats interfaces as materials. I work where engineering discipline meets genuine visual craft — building things that behave as well as they look.
-          </motion.p>
-
-          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-start sm:items-center gap-5 sm:gap-7 pointer-events-auto">
-            <a
-              href="#contact"
-              className="group relative inline-flex items-center justify-center rounded-lg bg-primary dark:bg-[#7c5cfc] px-6 sm:px-7 py-3 sm:py-3.5 font-display font-semibold text-[14px] sm:text-[15px] text-white overflow-hidden transition-all hover:brightness-110 dark:hover:bg-[#9070ff] hover:-translate-y-[1px]"
-            >
-              <span className="relative z-10">Start a project</span>
-            </a>
-            <a
-              href="#journey"
-              className="inline-flex items-center gap-1.5 font-body text-[14px] sm:text-[15px] text-slate-600 dark:text-[#ccc] hover:text-foreground dark:hover:text-white transition-colors"
-            >
-              See the work
-              <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-            </a>
-          </motion.div>
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
+          </span>
+          <span className="text-[10px] sm:text-[11px] font-body font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+            Kartikay Shukla &mdash; Available
+          </span>
         </motion.div>
 
+        {/* Headline — word mask reveal */}
+        {/*
+          Each word sits inside an overflow-hidden span (the mask).
+          The inner motion.span slides up from y:110% → y:0.
+          Only transform is animated → GPU composited, zero layout reflow.
+          pb-[0.12em] gives descenders (g, y) room so they don't clip.
+        */}
+        <h1 className="mb-6 sm:mb-8 font-display font-bold tracking-[-0.03em] leading-[1.1]">
 
+          {/* Line 1: "Digital Experiences," — two words stagger in */}
+          <span className="flex flex-wrap justify-center gap-x-[0.28em] text-[clamp(2.5rem,7vw,6rem)] text-foreground">
+            {[["Digital", 0.35], ["Experiences,", 0.46]].map(([word, delay]) => (
+              <span key={word} className="inline-block overflow-hidden pb-[0.12em]">
+                <motion.span className="inline-block" {...wordReveal(delay)}>
+                  {word}
+                </motion.span>
+              </span>
+            ))}
+          </span>
 
-      </div>
+          {/* Line 2: "Crafted." — punches in with a slight skew for personality */}
+          <span className="block text-[clamp(2.5rem,7vw,6rem)] text-muted-foreground italic font-normal overflow-hidden pb-[0.12em]">
+            <motion.span
+              className="inline-block"
+              initial={{ y: "110%", skewX: -6 }}
+              animate={{ y: 0, skewX: 0 }}
+              transition={{ duration: 0.9, ease: EASE, delay: 0.62 }}
+            >
+              Crafted.
+            </motion.span>
+          </span>
+        </h1>
+
+        {/* Paragraph */}
+        <motion.p
+          className="mb-8 max-w-xl font-body text-base sm:text-lg text-muted-foreground leading-relaxed pointer-events-auto"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: EASE, delay: 0.92 }}
+        >
+          Full-stack developer focused on clean interfaces. I work where solid fundamentals meet visual craft — building things that behave as comfortably as they look.
+        </motion.p>
+
+        {/* CTA buttons */}
+        <motion.div
+          className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 pointer-events-auto"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: EASE, delay: 1.08 }}
+        >
+          <a
+            href="#contact"
+            className="group relative inline-flex items-center justify-center rounded-full bg-foreground px-10 py-4 font-body font-medium text-[15px] sm:text-[16px] text-background transition-opacity duration-300 hover:opacity-85"
+          >
+            <span className="relative z-10">Start a project</span>
+          </a>
+          <a
+            href="#journey"
+            className="inline-flex items-center font-body font-medium text-[15px] sm:text-[16px] text-muted-foreground hover:text-foreground transition-colors duration-300 hover:underline underline-offset-4"
+          >
+            See the work
+          </a>
+        </motion.div>
+      </motion.div>
     </section>
   );
 };
