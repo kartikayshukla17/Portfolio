@@ -5,7 +5,7 @@ const Footer = () => {
     <footer className="border-t border-border bg-transparent py-12 px-6 lg:px-12 overflow-hidden relative">
       <div className="mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
         <div className="flex items-center gap-3 opacity-70 hover:opacity-100 transition-opacity duration-300">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-white">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <span className="material-symbols-outlined text-base font-bold">terminal</span>
           </div>
           <span className="text-lg font-display font-bold tracking-tight text-foreground">

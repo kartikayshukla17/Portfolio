@@ -19,21 +19,19 @@ const Skill = memo(({ skills }) => {
         opacity: 0, y: 24, duration: 0.6, ease: EASE, stagger: 0.04,
         scrollTrigger: { trigger: "[data-skills-grid]", start: "top 85%", once: true, invalidateOnRefresh: true },
       });
+      gsap.from("[data-skill-category]", {
+        opacity: 0, y: 20, duration: 0.6, ease: EASE, stagger: 0.12,
+        scrollTrigger: { trigger: "[data-skills-mobile]", start: "top 85%", once: true, invalidateOnRefresh: true },
+      });
     }, sectionRef);
 
     return () => ctx.revert();
   }, []);
 
   return (
-    // overflow-hidden removed — it silently breaks position:sticky on descendants
     <section ref={sectionRef} className="py-24 sm:py-32 lg:py-40 px-6 lg:px-12 bg-transparent relative" id="skills">
       <div className="mx-auto max-w-7xl relative z-10">
 
-        {/*
-          Sticky header — pins below the site nav (~80px) while chips scroll past.
-          -mx-6 lg:-mx-12 + matching px bleeds the glass background edge-to-edge so
-          chips disappear cleanly behind it rather than overlapping bare text.
-        */}
         <div
           data-skills-header
           className="sticky top-[72px] z-20 text-center pb-8 pt-4 -mx-6 lg:-mx-12 px-6 lg:px-12 bg-background-light/90 dark:bg-background/90 backdrop-blur-sm"
@@ -44,9 +42,34 @@ const Skill = memo(({ skills }) => {
           </h2>
         </div>
 
+        {/* ── Mobile: categorized layout ─────────────────────────── */}
+        <div data-skills-mobile className="sm:hidden flex flex-col gap-8 pt-6">
+          {skills.map((category) => (
+            <div key={category.category} data-skill-category>
+              <h3 className="text-xs font-display font-bold uppercase tracking-widest text-accent/70 mb-3 px-1">
+                {category.category}
+              </h3>
+              <div className="flex flex-wrap gap-2.5">
+                {category.items.map((skill) => (
+                  <div
+                    key={skill}
+                    data-skill-chip
+                    className="px-4 py-2 bg-background border border-border/50 rounded-lg hover:border-accent/30 hover:bg-muted/30 transition-all duration-[400ms]"
+                  >
+                    <span className="text-sm font-body text-slate-700 dark:text-slate-300 tracking-wide">
+                      {skill}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Desktop: flat chip cloud ──────────────────────────── */}
         <div
           data-skills-grid
-          className="flex flex-wrap justify-center gap-5 sm:gap-6 max-w-4xl mx-auto pt-10"
+          className="hidden sm:flex flex-wrap justify-center gap-5 sm:gap-6 max-w-4xl mx-auto pt-10"
         >
           {flatSkills.map((skill) => (
             <div

@@ -24,6 +24,9 @@ const timelineItems = [
 
 const Timeline = () => {
   const sectionRef = useRef(null);
+  const trackRef = useRef(null);
+  const fillRef = useRef(null);
+  const orbRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -32,22 +35,20 @@ const Timeline = () => {
         scrollTrigger: { trigger: "[data-timeline-header]", start: "top 85%", once: true, invalidateOnRefresh: true },
       });
 
-      // Line draws downward as you scroll — scrub ties progress to scroll position
-      gsap.fromTo(
-        "[data-timeline-line]",
-        { scaleY: 0 },
-        {
-          scaleY: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 80%",
-            end: "center 50%",
-            scrub: true,
-            invalidateOnRefresh: true,
-          },
-        }
-      );
+      // Glow orb travels down the track as user scrolls
+      ScrollTrigger.create({
+        trigger: sectionRef.current,
+        start: "top 95%",
+        end: "bottom 65%",
+        scrub: true,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          const p = self.progress;
+          const h = trackRef.current ? trackRef.current.offsetHeight : 0;
+          gsap.set(fillRef.current, { height: p * h });
+          gsap.set(orbRef.current, { top: p * h });
+        },
+      });
 
       gsap.from("[data-timeline-item]", {
         opacity: 0, y: 30, duration: 0.8, ease: EASE, stagger: 0.15,
@@ -73,10 +74,25 @@ const Timeline = () => {
         </div>
 
         <div className="relative">
-          {/* Vertical line — scaleY draws from top as you scroll */}
+          {/* Track (always visible, dim) */}
           <div
-            data-timeline-line
-            className="absolute left-5 sm:left-6 md:left-1/2 h-full w-0.5 md:-translate-x-1/2 bg-gradient-to-b from-accent/40 via-border to-transparent origin-top"
+            ref={trackRef}
+            className="absolute left-5 sm:left-6 md:left-1/2 h-full w-0.5 md:-translate-x-1/2 bg-border/25 rounded-full"
+          />
+          {/* Fill — grows from top as user scrolls */}
+          <div
+            ref={fillRef}
+            className="absolute left-5 sm:left-6 md:left-1/2 w-0.5 md:-translate-x-1/2 bg-accent rounded-full"
+            style={{ height: 0, top: 0 }}
+          />
+          {/* Traveling glow orb */}
+          <div
+            ref={orbRef}
+            className="absolute left-5 sm:left-6 md:left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-accent -translate-y-1/2"
+            style={{
+              top: 0,
+              boxShadow: "0 0 8px 3px hsl(38 90% 55% / 0.8), 0 0 20px 8px hsl(38 90% 55% / 0.35)",
+            }}
           />
 
           <div data-timeline-items className="space-y-10 sm:space-y-14 md:space-y-20">
