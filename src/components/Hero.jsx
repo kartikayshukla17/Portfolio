@@ -3,7 +3,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { EASE } from "../utils/motion";
 import AetherFlow from "./ui/aether-flow";
-import { useTheme } from "../hooks/useTheme";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -49,7 +48,6 @@ const TypeWriter = ({ children }) =>
     ));
 
 const Hero = () => {
-  const { theme } = useTheme();
   const sectionRef = useRef(null);
   const contentRef = useRef(null);
   const ctaBtnRef = useRef(null);
@@ -86,7 +84,7 @@ const Hero = () => {
       const btn = ctaBtnRef.current;
       const light = ctaLightRef.current;
       if (btn && light) {
-        const lw = 130;
+        const lw = 110;
         const w = btn.offsetWidth;
         const h = btn.offsetHeight;
         const perimeter = 2 * (w + h);
@@ -162,12 +160,10 @@ const Hero = () => {
               ref={ctaLightRef}
               className="pointer-events-none absolute"
               style={{
-                width: 130,
-                height: 130,
-                background: theme === "dark"
-                  ? "radial-gradient(ellipse at center, rgba(0,0,0,0.45) 0%, transparent 70%)"
-                  : "radial-gradient(ellipse at center, #ffffff 0%, transparent 70%)",
-                mixBlendMode: theme === "dark" ? "multiply" : "overlay",
+                width: 110,
+                height: 110,
+                background: "radial-gradient(ellipse at center, #ffffff 0%, transparent 70%)",
+                mixBlendMode: "overlay",
               }}
               aria-hidden
             />

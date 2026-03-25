@@ -357,7 +357,20 @@ const Projects = memo(({ projects }) => {
       className="relative"
     >
       {/* ── Desktop: sticky two-panel layout ───────────────────────── */}
-      <div ref={stickyRef} className="hidden md:flex sticky top-0 h-screen overflow-hidden">
+      <div ref={stickyRef} className="hidden md:flex md:flex-col sticky top-0 h-screen overflow-hidden">
+
+        {/* Centered header */}
+        <div data-desktop-header className="text-center shrink-0 pt-10 pb-6">
+          <span className="text-accent font-display font-bold text-xs sm:text-sm tracking-widest uppercase mb-3 block">
+            04. Archive
+          </span>
+          <h2 className="text-4xl sm:text-5xl font-bold font-display text-foreground">
+            Featured{" "}
+            <span className="text-muted-foreground font-normal italic">Projects.</span>
+          </h2>
+        </div>
+
+        <div className="flex flex-1 overflow-hidden">
 
         {/* Left panel */}
         <div className="w-[38%] xl:w-1/3 flex flex-col justify-center px-10 xl:px-14 border-r border-border/20 relative shrink-0">
@@ -365,17 +378,6 @@ const Projects = memo(({ projects }) => {
           {/* Progress bar — animated via GSAP */}
           <div className="absolute left-0 top-0 w-[2px] h-full bg-border/20">
             <div ref={progressRef} className="w-full bg-accent" style={{ height: "20%" }} />
-          </div>
-
-          {/* Header */}
-          <div data-desktop-header className="mb-8">
-            <span className="text-accent font-display font-bold text-xs tracking-widest uppercase mb-4 block">
-              04. Archive
-            </span>
-            <h2 className="text-4xl xl:text-5xl font-bold font-display text-foreground">
-              Featured{" "}
-              <span className="text-muted-foreground font-normal italic">Projects.</span>
-            </h2>
           </div>
 
           {/* Numbered list with sliding highlight */}
@@ -448,6 +450,7 @@ const Projects = memo(({ projects }) => {
               <CardContent project={projects[active]} />
             </TiltCard>
           </div>
+        </div>
         </div>
       </div>
 
