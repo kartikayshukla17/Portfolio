@@ -1,28 +1,28 @@
 import { useTheme } from "../hooks/useTheme";
 import { useActiveSection } from "../hooks/useActiveSection";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { memo, useState, useEffect, useCallback } from "react";
 
-const Header = () => {
+const navLinks = [
+  { name: "About", href: "#about", section: "about" },
+  { name: "Skills", href: "#skills", section: "skills" },
+  { name: "Journey", href: "#journey", section: "journey" },
+  { name: "Projects", href: "#projects", section: "projects" },
+  { name: "Contact", href: "#contact", section: "contact" },
+];
+
+const Header = memo(() => {
   const { theme, toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const activeSection = useActiveSection();
 
+  const handleScroll = useCallback(() => setScrolled(window.scrollY > 20), []);
+
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const navLinks = [
-    { name: "About", href: "#about", section: "about" },
-    { name: "Skills", href: "#skills", section: "skills" },
-    { name: "Journey", href: "#journey", section: "journey" },
-    { name: "Projects", href: "#projects", section: "projects" },
-    { name: "Contact", href: "#contact", section: "contact" },
-  ];
+  }, [handleScroll]);
 
   return (
     <header
@@ -60,16 +60,14 @@ const Header = () => {
             onClick={toggleTheme}
             className="rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
-            <motion.span
-              initial={false}
-              animate={{ rotate: theme === 'light' ? 0 : 360 }}
-              transition={{ duration: 0.5 }}
-              className="flex items-center justify-center text-slate-600 dark:text-slate-300"
+            <span
+              className="flex items-center justify-center text-slate-600 dark:text-slate-300 transition-transform duration-500"
+              style={{ transform: `rotate(${theme === 'light' ? 0 : 360}deg)` }}
             >
               <span className="material-symbols-outlined text-[22px]">
                 {theme === 'light' ? 'dark_mode' : 'light_mode'}
               </span>
-            </motion.span>
+            </span>
           </Button>
           <a
             href="#contact"
@@ -93,11 +91,7 @@ const Header = () => {
 
       {/* Mobile Menu Dropdown */}
       {isMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="md:hidden border-t border-primary/10 bg-background-light dark:bg-background-dark px-6 py-4 shadow-xl"
-        >
+        <div className="md:hidden border-t border-primary/10 bg-background-light dark:bg-background-dark px-6 py-4 shadow-xl animate-[fadeSlideDown_0.2s_ease-out]">
           <nav className="flex flex-col gap-4">
             {navLinks.map((link) => (
               <a
@@ -121,10 +115,10 @@ const Header = () => {
               Hire Me
             </a>
           </nav>
-        </motion.div>
+        </div>
       )}
     </header>
   );
-};
+});
 
 export default Header;

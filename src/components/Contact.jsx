@@ -1,50 +1,63 @@
-import { motion } from "framer-motion";
+import { memo, useCallback, useRef, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ContactProvider, useContact } from "../context/ContactContext";
 import ConfirmationModal from "./ConfirmationModal";
 import { GitHubIcon, LinkedInIcon } from "./ui/BrandIcons";
+import { EASE } from "../utils/motion";
 
-function ContactForm() {
+gsap.registerPlugin(ScrollTrigger);
+
+const ContactForm = memo(function ContactForm() {
   const { form, setForm, openModal } = useContact();
+  const sectionRef = useRef(null);
 
-  function handleChange(e) {
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
-  }
+  }, [setForm]);
 
-  function handleSubmit(e) {
+  const handleSubmit = useCallback((e) => {
     e.preventDefault();
     openModal();
-  }
+  }, [openModal]);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from("[data-contact-header]", {
+        opacity: 0, y: 20, duration: 0.7, ease: EASE,
+        scrollTrigger: { trigger: "[data-contact-header]", start: "top 85%", once: true, invalidateOnRefresh: true },
+      });
+      gsap.from("[data-contact-left]", {
+        opacity: 0, x: -30, duration: 0.7, ease: EASE,
+        scrollTrigger: { trigger: "[data-contact-left]", start: "top 85%", once: true, invalidateOnRefresh: true },
+      });
+      gsap.from("[data-contact-right]", {
+        opacity: 0, x: 30, duration: 0.7, ease: EASE, delay: 0.15,
+        scrollTrigger: { trigger: "[data-contact-right]", start: "top 85%", once: true, invalidateOnRefresh: true },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <section className="relative py-24 sm:py-32 lg:py-40 px-5 sm:px-8 lg:px-12 bg-transparent overflow-hidden" id="contact">
+    <section ref={sectionRef} className="relative py-24 sm:py-32 lg:py-40 px-5 sm:px-8 lg:px-12 bg-transparent overflow-hidden" id="contact">
       <div className="mx-auto max-w-7xl relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-10 sm:mb-14 lg:mb-16"
-        >
+        <div data-contact-header className="text-center mb-10 sm:mb-14 lg:mb-16">
           <span className="text-accent font-display font-bold text-xs sm:text-sm tracking-widest uppercase mb-3 block">05. Connection</span>
           <h2 className="text-4xl sm:text-5xl font-bold font-display text-foreground mb-3">
             Get in <span className="text-muted-foreground font-normal italic">Touch.</span>
           </h2>
           <p className="text-slate-500 dark:text-slate-400 font-body max-w-lg mx-auto text-sm">
-            Have a project in mind? Establish a connection below.
+            Need something built to scale and designed to stick? Let's make it happen.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 items-start max-w-6xl mx-auto">
 
           {/* Left Column: Contact Details */}
-          <motion.div
-            className="lg:col-span-5 flex flex-col gap-6"
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.5 }}
-          >
+          <div data-contact-left className="lg:col-span-5 flex flex-col gap-6">
             <div className="glass-panel aura-border p-8 rounded-2xl relative overflow-hidden group h-full">
               <div className="absolute inset-0 bg-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
@@ -84,16 +97,10 @@ function ContactForm() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Right Column: Message Form */}
-          <motion.div
-            className="lg:col-span-7 glass-panel aura-border p-8 rounded-2xl relative"
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
+          <div data-contact-right className="lg:col-span-7 glass-panel aura-border p-8 rounded-2xl relative">
             <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
@@ -158,7 +165,7 @@ function ContactForm() {
                 <span className="material-symbols-outlined text-lg">send</span>
               </button>
             </form>
-          </motion.div>
+          </div>
 
         </div>
       </div>
@@ -166,7 +173,7 @@ function ContactForm() {
       <ConfirmationModal />
     </section>
   );
-}
+});
 
 export default function Contact() {
   return (

@@ -1,65 +1,145 @@
-import React from "react";
-import { motion } from "framer-motion";
+import { memo, useRef, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { GitHubIcon, LinkedInIcon } from "./ui/BrandIcons";
 import { EASE } from "../utils/motion";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } },
-};
+gsap.registerPlugin(ScrollTrigger);
+
+// Each character in its own overflow-hidden clip — animates up from y:110%
+const CharMask = ({ text, charClassName = "" }) =>
+  text.split("").map((char, i) => (
+    <span key={i} className="inline-block overflow-hidden pb-[0.12em]">
+      <span
+        className={`inline-block${charClassName ? ` ${charClassName}` : ""}`}
+        data-about-char
+      >
+        {char === " " ? "\u00A0" : char}
+      </span>
+    </span>
+  ));
+
+// Each word in its own overflow-hidden clip — animates up from y:110%
+const WordMask = ({ children }) =>
+  String(children)
+    .split(" ")
+    .map((word, i, arr) => (
+      <span key={i} className="inline-block overflow-hidden pb-[0.1em]">
+        <span className="inline-block" data-about-word>
+          {word}
+        </span>
+        {i < arr.length - 1 && "\u00A0"}
+      </span>
+    ));
 
 const About = () => {
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Chars slide up from clip, staggered left→right
+      gsap.from("[data-about-char]", {
+        y: "110%",
+        duration: 0.75,
+        ease: EASE,
+        stagger: 0.025,
+        scrollTrigger: {
+          trigger: "[data-about-header]",
+          start: "top 85%",
+          once: true,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      // Label fades in just before chars start
+      gsap.from("[data-about-label]", {
+        opacity: 0,
+        y: 10,
+        duration: 0.5,
+        ease: EASE,
+        scrollTrigger: {
+          trigger: "[data-about-header]",
+          start: "top 85%",
+          once: true,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      // Words slide up from clip on scroll
+      gsap.from("[data-about-word]", {
+        y: "110%",
+        duration: 0.65,
+        ease: EASE,
+        stagger: 0.045,
+        scrollTrigger: {
+          trigger: "[data-about-text]",
+          start: "top 85%",
+          once: true,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      // Body paragraph — opacity + x slide (denser text, word-split would be too noisy)
+      gsap.from("[data-about-body]", {
+        opacity: 0,
+        x: -24,
+        duration: 0.7,
+        ease: EASE,
+        delay: 0.3,
+        scrollTrigger: {
+          trigger: "[data-about-text]",
+          start: "top 80%",
+          once: true,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      gsap.from("[data-about-links]", {
+        opacity: 0, scale: 0.95, duration: 0.9, ease: EASE, delay: 0.2,
+        scrollTrigger: { trigger: "[data-about-links]", start: "top 85%", once: true, invalidateOnRefresh: true },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section
+      ref={sectionRef}
       className="relative py-24 sm:py-32 lg:py-40 px-5 sm:px-8 lg:px-12 max-w-7xl mx-auto overflow-hidden"
       id="about"
     >
-      <motion.div
+      <div
+        data-about-header
         className="mb-12 sm:mb-16 md:mb-20 flex flex-col items-center text-center"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-80px" }}
-        variants={fadeUp}
       >
-        <span className="text-accent font-display font-bold tracking-widest uppercase text-xs sm:text-sm mb-3">01. Identity</span>
+        <span data-about-label className="text-accent font-display font-bold tracking-widest uppercase text-xs sm:text-sm mb-3">01. Identity</span>
         <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight font-display text-foreground">
-          The <span className="text-muted-foreground font-normal italic">Architect.</span>
+          <span className="inline-flex flex-wrap justify-center">
+            <CharMask text={"The "} />
+            <CharMask
+              text="Architect."
+              charClassName="text-muted-foreground font-normal italic"
+            />
+          </span>
         </h2>
-      </motion.div>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-center">
         {/* Text Column */}
-        <motion.div
-          className="md:col-span-7 flex flex-col gap-5"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
-          variants={{
-            hidden: { opacity: 0, x: -30 },
-            visible: { opacity: 1, x: 0, transition: { staggerChildren: 0.15, duration: 0.7, ease: EASE } },
-          }}
-        >
-          <motion.p variants={fadeUp} className="text-lg sm:text-2xl font-display font-bold text-foreground leading-snug">
-            I focus on building complete digital products.
-          </motion.p>
-          <motion.p variants={fadeUp} className="text-sm sm:text-base text-slate-600 dark:text-slate-400 font-body leading-loose">
-            My approach revolves around building clean, robust applications that don't compromise on aesthetics.
-            I bridge the divide between highly technical backend performance and fluid frontend interactions.
-            Every detail is carefully considered to deliver a flawless experience.
-          </motion.p>
-        </motion.div>
+        <div data-about-text className="md:col-span-7 flex flex-col gap-5">
+          <p className="text-lg sm:text-2xl font-display font-bold text-foreground leading-snug">
+            <WordMask>I focus on building complete digital products.</WordMask>
+          </p>
+          <p data-about-body className="text-sm sm:text-base text-slate-600 dark:text-slate-400 font-body leading-loose">
+            My approach is built on a simple duality: systems that hold under real load, and interfaces that earn repeat visits.
+            I don't treat performance and aesthetics as trade-offs — the architecture informs the feel, and the feel drives the architecture.
+            That tension is where the best products live.
+          </p>
+        </div>
 
         {/* Links Column */}
-        <motion.div
-          className="md:col-span-5 relative"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
-          variants={{
-            hidden: { opacity: 0, scale: 0.95 },
-            visible: { opacity: 1, scale: 1, transition: { delay: 0.2, duration: 0.9, ease: EASE } },
-          }}
-        >
+        <div data-about-links className="md:col-span-5 relative">
           <div className="glass-panel aura-border p-6 sm:p-8 rounded-2xl relative overflow-hidden group">
             <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <h3 className="text-xl sm:text-2xl font-display font-bold mb-5 sm:mb-6 text-foreground">Connect</h3>
@@ -82,10 +162,10 @@ const About = () => {
               </a>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
 };
 
-export default About;
+export default memo(About);

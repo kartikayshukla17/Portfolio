@@ -1,37 +1,62 @@
-import React, { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { memo, useRef, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { EASE } from "../utils/motion";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const timelineItems = [
+  {
+    year: "2025",
+    title: "Full Stack Developer",
+    company: "Present",
+    description: "Architecting full-stack products where scalable backend systems meet interfaces users actually remember. React, Next.js, Node.js — chosen for what they enable, not what they signal.",
+    icon: "code",
+  },
+  {
+    year: "2022",
+    title: "iOS Developer",
+    company: "Origins",
+    description: "Started the journey with mobile app development, creating intuitive iOS applications using Swift and SwiftUI.",
+    icon: "terminal",
+  },
+];
 
 const Timeline = () => {
   const sectionRef = useRef(null);
 
-  // Track scroll through the section.
-  // 0 = section top hits 80% down viewport (just entering from bottom)
-  // 1 = section bottom hits 50% down viewport (fully in view, user reading)
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start 0.8", "end 0.5"],
-  });
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from("[data-timeline-header]", {
+        opacity: 0, y: 20, duration: 0.7, ease: EASE,
+        scrollTrigger: { trigger: "[data-timeline-header]", start: "top 85%", once: true, invalidateOnRefresh: true },
+      });
 
-  // Line draws downward as you scroll through the section
-  const lineScaleY = useTransform(scrollYProgress, [0, 1], [0, 1]);
+      // Line draws downward as you scroll — scrub ties progress to scroll position
+      gsap.fromTo(
+        "[data-timeline-line]",
+        { scaleY: 0 },
+        {
+          scaleY: 1,
+          ease: "none",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 80%",
+            end: "center 50%",
+            scrub: true,
+            invalidateOnRefresh: true,
+          },
+        }
+      );
 
-  const timelineItems = [
-    {
-      year: "2025",
-      title: "Full Stack Developer",
-      company: "Present",
-      description: "Building scalable web applications, mastering modern frameworks like React, Next.js, and Node.js to create seamless digital experiences.",
-      icon: "code",
-    },
-    {
-      year: "2022",
-      title: "iOS Developer",
-      company: "Origins",
-      description: "Started the journey with mobile app development, creating intuitive iOS applications using Swift and SwiftUI.",
-      icon: "terminal",
-    },
-  ];
+      gsap.from("[data-timeline-item]", {
+        opacity: 0, y: 30, duration: 0.8, ease: EASE, stagger: 0.15,
+        scrollTrigger: { trigger: "[data-timeline-items]", start: "top 85%", once: true, invalidateOnRefresh: true },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
     <section
@@ -40,35 +65,26 @@ const Timeline = () => {
       id="journey"
     >
       <div className="mx-auto max-w-5xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, ease: EASE }}
-          className="text-center mb-12 sm:mb-16 lg:mb-20"
-        >
+        <div data-timeline-header className="text-center mb-12 sm:mb-16 lg:mb-20">
           <span className="text-accent font-display font-bold text-xs sm:text-sm tracking-widest uppercase mb-3 block">03. Evolution</span>
           <h2 className="text-4xl sm:text-5xl font-bold font-display text-foreground">
             The <span className="text-muted-foreground font-normal italic">Journey.</span>
           </h2>
-        </motion.div>
+        </div>
 
         <div className="relative">
           {/* Vertical line — scaleY draws from top as you scroll */}
-          <motion.div
-            className="absolute left-5 sm:left-6 md:left-1/2 h-full w-0.5 md:-translate-x-1/2 bg-gradient-to-b from-accent/40 via-border to-transparent"
-            style={{ scaleY: lineScaleY, transformOrigin: "top center" }}
+          <div
+            data-timeline-line
+            className="absolute left-5 sm:left-6 md:left-1/2 h-full w-0.5 md:-translate-x-1/2 bg-gradient-to-b from-accent/40 via-border to-transparent origin-top"
           />
 
-          <div className="space-y-10 sm:space-y-14 md:space-y-20">
+          <div data-timeline-items className="space-y-10 sm:space-y-14 md:space-y-20">
             {timelineItems.map((item, index) => (
-              <motion.div
+              <div
                 key={item.year}
+                data-timeline-item
                 className={`relative flex flex-col md:flex-row items-start md:items-center justify-between group pl-14 sm:pl-16 md:pl-0 ${index % 2 === 0 ? "md:flex-row-reverse" : ""}`}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.8, ease: EASE, delay: 0.1 }}
               >
                 {/* Content */}
                 <div className={`flex w-full md:w-[45%] flex-col ${index % 2 === 0 ? "md:items-end md:text-right" : "md:items-start md:text-left"}`}>
@@ -88,7 +104,7 @@ const Timeline = () => {
 
                 {/* Spacer */}
                 <div className="hidden md:block w-[45%]" />
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -97,4 +113,4 @@ const Timeline = () => {
   );
 };
 
-export default Timeline;
+export default memo(Timeline);
