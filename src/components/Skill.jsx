@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { EASE } from "../utils/motion";
+import { EASE, fadeUp, staggerContainer } from "../utils/motion";
 
 const Skill = ({ skills }) => {
   return (
@@ -28,20 +28,21 @@ const Skill = ({ skills }) => {
 
         <motion.div
           className="flex flex-wrap justify-center gap-5 sm:gap-6 max-w-4xl mx-auto pt-10"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial="hidden"
+          whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.9, ease: EASE }}
+          variants={staggerContainer(0.04, 0.1)}
         >
           {skills.flatMap((s) => s.items).map((skill) => (
-            <div
+            <motion.div
               key={skill}
-              className="group relative px-6 py-3 bg-background border border-border/50 rounded-lg hover:border-accent/30 hover:bg-muted/30 transition-all duration-500 overflow-hidden"
+              variants={fadeUp}
+              className="group relative px-6 py-3 bg-background border border-border/50 rounded-lg hover:border-accent/30 hover:bg-muted/30 transition-all duration-[400ms] overflow-hidden"
             >
-              <span className="text-sm md:text-base font-body text-slate-700 dark:text-slate-300 tracking-wide relative z-10 group-hover:text-foreground transition-colors duration-300">
+              <span className="text-sm md:text-base font-body text-slate-700 dark:text-slate-300 tracking-wide relative z-10 group-hover:text-foreground transition-colors duration-[400ms]">
                 {skill}
               </span>
-            </div>
+            </motion.div>
           ))}
         </motion.div>
       </div>

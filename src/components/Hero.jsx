@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { EASE } from "../utils/motion";
-import ShaderCanvas from "./ui/ShaderCanvas";
+import AetherFlow from "./ui/aether-flow";
 
 // Word-mask reveal — only GPU-composited properties (transform + opacity)
 // overflow-hidden on each word wrapper acts as the clip mask
@@ -32,7 +32,7 @@ const Hero = () => {
       id="home"
     >
       {/* Shader fills the section; IntersectionObserver inside pauses it when offscreen */}
-      <ShaderCanvas />
+      <AetherFlow />
 
       <motion.div
         style={{ y, opacity }}
