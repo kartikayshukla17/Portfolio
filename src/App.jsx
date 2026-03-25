@@ -49,7 +49,7 @@ const App = () => {
   }, []);
 
   return (
-    <div className="bg-background-light dark:bg-background font-body text-slate-900 dark:text-slate-100 antialiased transition-colors duration-300 min-h-screen flex flex-col relative overflow-hidden">
+    <div className="bg-background-light dark:bg-background font-body text-slate-900 dark:text-slate-100 antialiased transition-colors duration-300 min-h-screen flex flex-col relative overflow-clip">
       <CustomCursor />
       <Header />
       <main className="z-10 relative">
