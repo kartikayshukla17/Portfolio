@@ -1,23 +1,7 @@
 import { useTheme } from "../hooks/useTheme";
 import { useActiveSection } from "../hooks/useActiveSection";
 import { Button } from "@/components/ui/button";
-import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
-import { memo, useState, useEffect, useCallback } from "react";
-
-const HireMeButton = () => (
-  <div className="hidden sm:block">
-    <LiquidMetalButton
-      label="Hire Me"
-      width={100}
-      innerBackground="hsl(var(--accent))"
-      textColor="hsl(var(--accent-foreground))"
-      onClick={() => {
-        const el = document.getElementById("contact");
-        if (el) el.scrollIntoView({ behavior: "smooth" });
-      }}
-    />
-  </div>
-);
+import { memo, useState, useEffect, useCallback, useRef } from "react";
 
 const navLinks = [
   { name: "About", href: "#about", section: "about" },
@@ -32,35 +16,72 @@ const Header = memo(() => {
   const [scrolled, setScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const activeSection = useActiveSection();
+  const menuRef = useRef(null);
+  const menuButtonRef = useRef(null);
 
   const handleScroll = useCallback(() => setScrolled(window.scrollY > 20), []);
 
+  const closeMenu = useCallback(() => setIsMenuOpen(false), []);
+
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const onKey = (e) => {
+      if (e.key === "Escape") closeMenu();
+    };
+    document.addEventListener("keydown", onKey);
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.__lenis?.stop?.();
+
+    const first = menuRef.current?.querySelector("a, button");
+    first?.focus();
+
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+      window.__lenis?.start?.();
+      menuButtonRef.current?.focus();
+    };
+  }, [isMenuOpen, closeMenu]);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const onChange = (e) => {
+      if (e.matches) closeMenu();
+    };
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, [closeMenu]);
+
   return (
     <header
-      className={`sticky top-0 z-50 w-full border-b transition-all duration-300 ${scrolled ? "border-primary/10 bg-background/30 backdrop-blur-xl" : "border-transparent bg-transparent py-1"
-        }`}
+      className={`sticky top-0 z-50 w-full border-b pt-[env(safe-area-inset-top)] transition-colors duration-200 ${
+        scrolled
+          ? "border-border bg-background/90"
+          : "border-transparent bg-transparent"
+      }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-12 py-3 sm:py-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-foreground text-background">
-            <span className="material-symbols-outlined font-bold">terminal</span>
-          </div>
-          <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Kartikay.<span className="text-accent">dev</span></span>
-        </div>
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3 sm:px-8 sm:py-4 lg:px-12">
+        <a href="#home" className="inline-flex min-h-11 items-center rounded-sm font-display text-xl font-bold tracking-tight text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          Kartikay<span className="text-accent">.dev</span>
+        </a>
 
-        <nav className="hidden md:flex items-center gap-10">
+        <nav className="hidden lg:flex items-center gap-8 xl:gap-10" aria-label="Primary">
           {navLinks.map((link) => (
             <a
               key={link.name}
               href={link.href}
-              className={`text-sm font-medium transition-colors duration-300 ${
+              aria-current={activeSection === link.section ? "page" : undefined}
+              className={`inline-flex min-h-11 items-center text-sm font-medium transition-colors duration-200 ${
                 activeSection === link.section
-                  ? "text-foreground border-b-2 border-accent pb-0.5"
+                  ? "text-foreground"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -69,63 +90,89 @@ const Header = memo(() => {
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <Button
             variant="ghost"
             size="icon"
             onClick={toggleTheme}
-            className="rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
+            className="h-11 w-11 rounded-full transition-colors duration-200 hover:bg-muted"
           >
             <span
               className="flex items-center justify-center text-slate-600 dark:text-slate-300 transition-transform duration-500"
-              style={{ transform: `rotate(${theme === 'light' ? 0 : 360}deg)` }}
+              style={{ transform: `rotate(${theme === "light" ? 0 : 360}deg)` }}
             >
-              <span className="material-symbols-outlined text-[22px]">
-                {theme === 'light' ? 'dark_mode' : 'light_mode'}
+              <span className="material-symbols-outlined text-[22px]" aria-hidden="true">
+                {theme === "light" ? "dark_mode" : "light_mode"}
               </span>
             </span>
           </Button>
-          <HireMeButton />
+          <a
+            href="#contact"
+            className="hidden min-h-11 cursor-pointer items-center text-sm font-medium text-foreground transition-colors duration-200 hover:text-accent sm:inline-flex"
+          >
+            Hire me
+          </a>
 
           <Button
+            ref={menuButtonRef}
             variant="ghost"
             size="icon"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            onClick={() => setIsMenuOpen((open) => !open)}
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-nav"
+            className="lg:hidden h-11 w-11 rounded-full transition-colors duration-200 hover:bg-muted"
           >
-            <span className="material-symbols-outlined">
+            <span className="material-symbols-outlined" aria-hidden="true">
               {isMenuOpen ? "close" : "menu"}
             </span>
           </Button>
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
       {isMenuOpen && (
-        <div className="md:hidden border-t border-primary/10 bg-background-light dark:bg-background-dark px-6 py-4 shadow-xl animate-[fadeSlideDown_0.2s_ease-out]">
-          <nav className="flex flex-col gap-4">
-            {navLinks.map((link) => (
+        <div className="lg:hidden">
+          <button
+            type="button"
+            aria-label="Close menu"
+            className="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm"
+            onClick={closeMenu}
+          />
+          <div
+            id="mobile-nav"
+            ref={menuRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Site navigation"
+            className="fixed inset-x-0 bottom-0 z-50 max-h-[min(88dvh,640px)] overflow-y-auto rounded-t-3xl border-t border-primary/10 bg-background-light dark:bg-background px-6 pt-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-2xl md:inset-y-0 md:left-auto md:right-0 md:h-full md:max-h-none md:w-[min(22rem,86vw)] md:rounded-none md:rounded-l-3xl md:border-l md:border-t-0"
+          >
+            <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-border md:hidden" aria-hidden="true" />
+            <nav className="flex flex-col gap-1">
+              {navLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  onClick={closeMenu}
+                  aria-current={activeSection === link.section ? "page" : undefined}
+                  className={`flex min-h-12 items-center rounded-xl px-4 text-base font-medium transition-colors duration-300 ${
+                    activeSection === link.section
+                      ? "bg-accent/10 text-foreground"
+                      : "text-muted-foreground hover:bg-muted/40 hover:text-foreground"
+                  }`}
+                >
+                  {link.name}
+                </a>
+              ))}
               <a
-                key={link.name}
-                href={link.href}
-                onClick={() => setIsMenuOpen(false)}
-                className={`text-base font-medium transition-colors duration-300 ${
-                  activeSection === link.section
-                    ? "text-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
+                href="#contact"
+                onClick={closeMenu}
+                className="mt-4 flex min-h-12 items-center justify-center rounded-full bg-accent px-6 font-bold text-accent-foreground hover:opacity-85 transition-opacity duration-300 sm:hidden"
               >
-                {link.name}
+                Hire Me
               </a>
-            ))}
-            <a
-              href="#contact"
-              onClick={() => setIsMenuOpen(false)}
-              className="mt-2 text-center rounded-full bg-accent px-6 py-3 font-bold text-accent-foreground hover:opacity-85 transition-opacity duration-300 sm:hidden"
-            >
-              Hire Me
-            </a>
-          </nav>
+            </nav>
+          </div>
         </div>
       )}
     </header>

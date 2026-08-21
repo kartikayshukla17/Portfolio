@@ -8,16 +8,18 @@ const skills = [
       "TypeScript",
       "HTML5",
       "CSS3",
+      "Tailwind CSS",
     ],
   },
   {
     category: "Backend",
-    items: ["Node.js", "Express.js", "REST APIs", "MongoDB", "PostgreSQL", "Hono", "Nest.js"],
+    items: ["Node.js", "Express.js", "REST APIs", "MongoDB", "PostgreSQL", "Prisma", "Firebase", "Hono", "Nest.js"],
   },
   {
     category: "Tools & Practices",
     items: [
       "Git & GitHub",
+      "Electron",
       "CI/CD basics",
       "GSAP",
       "Lenis",

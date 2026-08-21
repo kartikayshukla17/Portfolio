@@ -102,7 +102,7 @@ export function LiquidMetalButton({
     shaderMount.current?.setSpeed?.(0.6);
   };
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement> | React.PointerEvent<HTMLButtonElement>) => {
     if (shaderMount.current?.setSpeed) {
       shaderMount.current.setSpeed(2.4);
       setTimeout(() => {
@@ -254,6 +254,9 @@ export function LiquidMetalButton({
             onMouseLeave={handleMouseLeave}
             onMouseDown={() => setIsPressed(true)}
             onMouseUp={() => setIsPressed(false)}
+            onPointerDown={() => setIsPressed(true)}
+            onPointerUp={() => setIsPressed(false)}
+            onPointerCancel={() => setIsPressed(false)}
             style={{
               position: "absolute",
               top: 0, left: 0,
@@ -270,6 +273,7 @@ export function LiquidMetalButton({
               overflow: "hidden",
               borderRadius: "100px",
             }}
+            type="button"
             aria-label={label}
           >
             {ripples.map((ripple) => (

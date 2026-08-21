@@ -15,12 +15,28 @@ const ConfirmationModal = () => {
         );
     }, [isModalOpen]);
 
+    useEffect(() => {
+        if (!isModalOpen) return;
+        const onKey = (e) => {
+            if (e.key === "Escape" && !isSubmitting) closeModal();
+        };
+        document.addEventListener("keydown", onKey);
+        const prev = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        window.__lenis?.stop?.();
+        return () => {
+            document.removeEventListener("keydown", onKey);
+            document.body.style.overflow = prev;
+            window.__lenis?.start?.();
+        };
+    }, [isModalOpen, isSubmitting, closeModal]);
+
     // Animate success state
     useEffect(() => {
         if (submissionStatus !== 'success' || !panelRef.current) return;
         const ctx = gsap.context(() => {
             gsap.from('[data-success-content]', { opacity: 0, y: 20, scale: 0.95, duration: 1.2, ease: 'expo.out', delay: 0.1 });
-            gsap.from('[data-check-icon]', { scale: 0, duration: 0.6, ease: 'back.out(2)', delay: 0.3 });
+            gsap.from('[data-check-icon]', { scale: 0, duration: 0.6, ease: 'expo.out', delay: 0.3 });
             gsap.to('[data-check-ripple]', { scale: 2.5, opacity: 0, duration: 1.5, ease: 'power2.out', delay: 0.5 });
         }, panelRef);
         return () => ctx.revert();
@@ -62,11 +78,25 @@ const ConfirmationModal = () => {
     };
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+        <div
+            className="fixed inset-0 z-[100] flex items-end justify-center bg-black/60 backdrop-blur-sm p-0 sm:items-center sm:p-4"
+            onClick={(e) => { if (e.target === e.currentTarget && !isSubmitting) closeModal(); }}
+        >
             <div
                 ref={panelRef}
-                className="relative w-full max-w-lg rounded-2xl border border-border/50 bg-background p-10 shadow-sm"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="confirm-title"
+                className="relative w-full max-w-lg max-h-[90dvh] overflow-y-auto rounded-t-3xl sm:rounded-2xl border border-border/50 bg-background p-6 sm:p-10 shadow-sm pb-[max(1.5rem,env(safe-area-inset-bottom))]"
             >
+                <button
+                    type="button"
+                    onClick={() => { if (!isSubmitting) closeModal(); }}
+                    aria-label="Close"
+                    className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                >
+                    <span className="material-symbols-outlined" aria-hidden="true">close</span>
+                </button>
                 {submissionStatus === "success" ? (
                     <div data-success-content className="text-center py-10">
                         <div className="relative mx-auto mb-8 flex h-20 w-20 items-center justify-center">
@@ -81,26 +111,26 @@ const ConfirmationModal = () => {
                                 className="absolute inset-0 rounded-full border-2 border-accent opacity-60"
                             />
                         </div>
-                        <h3 className="mb-3 text-3xl font-display font-semibold tracking-tight text-foreground">Message Delivered.</h3>
-                        <p className="mb-10 text-muted-foreground font-body text-base">Thanks for reaching out, {form.name}. I'll get back to you shortly.</p>
+                        <h3 id="confirm-title" className="mb-3 text-3xl font-display font-semibold tracking-tight text-foreground">Sent.</h3>
+                        <p className="mb-10 text-muted-foreground font-body text-base">Got it, {form.name}. I'll reply.</p>
                         <button
                             onClick={() => { closeModal(); setSubmissionStatus(null); setForm({ name: '', email: '', subject: '', message: '' }); }}
-                            className="text-accent font-body font-medium text-base hover:underline underline-offset-4 transition-all duration-300"
+                            className="inline-flex min-h-11 items-center justify-center text-accent font-body font-medium text-base hover:underline underline-offset-4 transition-colors duration-200"
                         >
                             Close
                         </button>
                     </div>
                 ) : (
                     <>
-                        <h3 className="mb-6 text-2xl font-bold font-display">Review Your Message</h3>
+                        <h3 id="confirm-title" className="mb-6 pr-10 text-2xl font-bold font-display">Review Your Message</h3>
                         <div className="space-y-4 mb-8">
                             <div>
-                                <label className="text-xs font-semibold text-slate-500 uppercase">Name</label>
-                                <input type="text" name="name" value={form.name} onChange={handleEdit} className="w-full border-b border-slate-200 dark:border-slate-700 bg-transparent py-2 outline-none focus:border-accent transition-colors text-slate-900 dark:text-slate-100 placeholder:text-slate-500" />
+                                <label htmlFor="confirm-name" className="text-xs font-semibold text-slate-500 uppercase">Name</label>
+                                <input id="confirm-name" type="text" name="name" value={form.name} onChange={handleEdit} className="w-full min-h-11 border-b border-slate-200 dark:border-slate-700 bg-transparent py-2 outline-none focus:border-accent transition-colors text-slate-900 dark:text-slate-100 placeholder:text-slate-500" />
                             </div>
                             <div>
-                                <label className="text-xs font-semibold text-slate-500 uppercase">Email</label>
-                                <input type="email" name="email" value={form.email} onChange={handleEdit} className="w-full border-b border-slate-200 dark:border-slate-700 bg-transparent py-2 outline-none focus:border-accent transition-colors text-slate-900 dark:text-slate-100 placeholder:text-slate-500" />
+                                <label htmlFor="confirm-email" className="text-xs font-semibold text-slate-500 uppercase">Email</label>
+                                <input id="confirm-email" type="email" name="email" value={form.email} onChange={handleEdit} className="w-full min-h-11 border-b border-slate-200 dark:border-slate-700 bg-transparent py-2 outline-none focus:border-accent transition-colors text-slate-900 dark:text-slate-100 placeholder:text-slate-500" />
                             </div>
                             <div>
                                 <label className="text-xs font-semibold text-slate-500 uppercase">Subject</label>
@@ -114,15 +144,15 @@ const ConfirmationModal = () => {
 
                         {submissionStatus === "error" && (
                             <div className="mb-6 rounded-lg bg-red-500/10 p-3 text-sm text-red-500 border border-red-500/20">
-                                Oops! Something went wrong. Please check your Web3Forms Access Key or try again later.
+                                Oops. Couldn't send. Try again in a minute.
                             </div>
                         )}
 
-                        <div className="flex gap-4 pt-4">
-                            <button onClick={closeModal} disabled={isSubmitting} className="flex-1 rounded-full border border-border py-4 font-body font-medium text-muted-foreground hover:bg-muted/10 transition-colors duration-300">
+                        <div className="flex flex-col-reverse sm:flex-row gap-3 sm:gap-4 pt-4">
+                            <button onClick={closeModal} disabled={isSubmitting} className="flex-1 min-h-12 rounded-full border border-border py-4 font-body font-medium text-muted-foreground hover:bg-muted/10 transition-colors duration-300">
                                 Cancel
                             </button>
-                            <button onClick={submitToWeb3Forms} disabled={isSubmitting} className="flex flex-[2] items-center justify-center gap-3 rounded-full bg-foreground py-4 font-body font-medium text-[16px] text-background transition-opacity duration-300 hover:opacity-85 disabled:opacity-50">
+                            <button onClick={submitToWeb3Forms} disabled={isSubmitting} className="flex flex-[2] min-h-12 items-center justify-center gap-3 rounded-full bg-foreground py-4 font-body font-medium text-[16px] text-background transition-opacity duration-300 hover:opacity-85 disabled:opacity-50">
                                 {isSubmitting ? "Sending..." : "Confirm & Send"}
                                 {!isSubmitting && <span className="material-symbols-outlined text-[18px]">arrow_forward</span>}
                             </button>

@@ -6,7 +6,7 @@ import skills from "./data/skills.js";
 import project from "./data/project.js";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
-import CustomCursor from "./components/ui/CustomCursor";
+import StampField from "./components/ui/stamp-field";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,12 +19,14 @@ const Footer = lazy(() => import("./components/Footer"));
 
 const App = () => {
   useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     const lenis = window.__lenis = new Lenis({
-      duration: 1.2,
+      duration: reduced ? 0 : 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",
       gestureOrientation: "vertical",
-      smoothWheel: true,
+      smoothWheel: !reduced,
       wheelMultiplier: 1,
       smoothTouch: false,
       touchMultiplier: 2,
@@ -49,23 +51,29 @@ const App = () => {
   }, []);
 
   return (
-    <div className="bg-background-light dark:bg-background font-body text-slate-900 dark:text-slate-100 antialiased transition-colors duration-300 min-h-screen flex flex-col relative overflow-clip">
-      <CustomCursor />
-      <Header />
-      <main className="z-10 relative">
-        <Hero />
+    <>
+      <StampField />
+      <div className="page-grain" aria-hidden="true" />
+      <div className="relative z-10 flex min-h-dvh flex-col overflow-clip font-body text-slate-900 antialiased transition-colors duration-300 dark:text-slate-100">
+        <a href="#main" className="skip-link">
+          Skip to content
+        </a>
+        <Header />
+        <main id="main" className="relative z-10">
+          <Hero />
+          <Suspense fallback={null}>
+            <About />
+            <Skill skills={skills} />
+            <Timeline />
+            <Projects projects={project} />
+            <Contact />
+          </Suspense>
+        </main>
         <Suspense fallback={null}>
-          <About />
-          <Skill skills={skills} />
-          <Timeline />
-          <Projects projects={project} />
-          <Contact />
+          <Footer />
         </Suspense>
-      </main>
-      <Suspense fallback={null}>
-        <Footer />
-      </Suspense>
-    </div>
+      </div>
+    </>
   );
 };
 

@@ -9,6 +9,7 @@ const CustomCursor = () => {
   useEffect(() => {
     // No cursor on touch/stylus devices
     if (window.matchMedia("(pointer: coarse)").matches) return;
+    if (window.matchMedia("(hover: none)").matches) return;
 
     const dot = dotRef.current;
     const ring = ringRef.current;

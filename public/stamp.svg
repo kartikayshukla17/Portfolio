@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" role="img" aria-label="Kartikay mill stamp: build useful stuff, make it beautiful">
+  <title>build useful stuff, make it beautiful</title>
+  <defs>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@600");
+      .ink {
+        fill: none;
+        stroke: #8F5E10;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .fill { fill: #8F5E10; }
+      .type {
+        fill: #8F5E10;
+        font-family: "Zilla Slab", "Iowan Old Style", Palatino, Georgia, serif;
+        font-weight: 600;
+      }
+    </style>
+    <filter id="press" x="-12%" y="-12%" width="124%" height="124%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="4" seed="7" result="grain"/>
+      <feDisplacementMap in="SourceGraphic" in2="grain" scale="2.8" xChannelSelector="R" yChannelSelector="G" result="wobble"/>
+      <feGaussianBlur in="wobble" stdDeviation="0.18"/>
+    </filter>
+    <filter id="skip" x="-8%" y="-8%" width="116%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency="1.15" numOctaves="3" seed="19" result="n"/>
+      <feColorMatrix in="n" type="luminanceToAlpha" result="a"/>
+      <feComponentTransfer in="a" result="mask">
+        <feFuncA type="discrete" tableValues="0 0 1 1 1 0 1 1"/>
+      </feComponentTransfer>
+      <feComposite in="SourceGraphic" in2="mask" operator="in"/>
+    </filter>
+    <path id="rim" d="M256,256 m0,-168 a168,168 0 1,1 0,336 a168,168 0 1,1 0,-336"/>
+    <path id="inner-arc" d="M256,256 m0,102 a102,102 0 1,1 0,-204 a102,102 0 1,1 0,204"/>
+  </defs>
+
+  <g transform="rotate(-9 256 256)" filter="url(#press)">
+    <g opacity="0.2" transform="translate(3.5 2.2)" filter="url(#skip)">
+      <circle class="ink" cx="256" cy="256" r="196" stroke-width="11"/>
+      <circle class="ink" cx="256" cy="256" r="178" stroke-width="1.35"/>
+      <circle class="ink" cx="256" cy="256" r="126" stroke-width="1.35"/>
+    </g>
+
+    <g filter="url(#skip)">
+      <circle class="ink" cx="256" cy="256" r="196" stroke-width="11"/>
+      <circle class="ink" cx="256" cy="256" r="178" stroke-width="1.4"/>
+      <circle class="ink" cx="256" cy="256" r="126" stroke-width="1.4"/>
+    </g>
+
+    <text class="type" font-size="21" letter-spacing="0.34em">
+      <textPath href="#rim" xlink:href="#rim" startOffset="0%">BUILD USEFUL STUFF  &#183;  MAKE IT BEAUTIFUL  &#183;  </textPath>
+    </text>
+    <text class="type" font-size="11" letter-spacing="0.55em">
+      <textPath href="#inner-arc" xlink:href="#inner-arc" startOffset="18%">KARTIKAY  &#183;  2022</textPath>
+    </text>
+
+    <g transform="translate(256 248)" class="ink" stroke-width="2.15">
+      <path d="M0,-26 C11,-10 11,10 0,26 C-11,10 -11,-10 0,-26Z"/>
+      <path d="M-26,0 C-10,-11 10,-11 26,0 C10,11 -10,11 -26,0Z"/>
+      <circle class="fill" r="3.4" stroke="none"/>
+      <path d="M0,-38 V-30 M0,30 V38 M-38,0 H-30 M38,0 H30" stroke-width="1.6"/>
+    </g>
+  </g>
+</svg>

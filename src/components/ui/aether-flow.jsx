@@ -60,49 +60,42 @@ mat2 rotate(float angle) {
 
 void main() {
   vec2 uv = (gl_FragCoord.xy * 2.0 - uResolution) / min(uResolution.x, uResolution.y);
-  float t = uTime * 0.15;
+  float t = uTime * 0.08;
 
   // Mouse warp — subtle pull toward cursor
   vec2 mouseUV = (uMouse * 2.0 - uResolution) / min(uResolution.x, uResolution.y);
-  float warp = smoothstep(0.7, 0.0, distance(uv, mouseUV)) * 0.4;
+  float warp = smoothstep(0.7, 0.0, distance(uv, mouseUV)) * 0.22;
 
-  vec2 p = uv * rotate(t * 0.1) + warp;
+  vec2 p = uv * rotate(t * 0.08) + warp;
 
-  // Triple-layer domain warping — each layer feeds into the next
-  float n1 = fbm(p * 1.2 + vec2(t * 0.10,  t * 0.20));
-  float n2 = fbm(p * 2.0 + n1  + vec2(-t * 0.25,  t * 0.15));
-  float n3 = fbm(p * 3.5 + n2  + vec2( t * 0.10, -t * 0.20));
+  float n1 = fbm(p * 1.1 + vec2(t * 0.08,  t * 0.14));
+  float n2 = fbm(p * 1.8 + n1  + vec2(-t * 0.16,  t * 0.10));
+  float n3 = fbm(p * 2.8 + n2  + vec2( t * 0.07, -t * 0.12));
 
-  float f = n1 * 0.6 + n2 * 0.25 + n3 * 0.15;
+  float f = n1 * 0.62 + n2 * 0.26 + n3 * 0.12;
 
-  // --- Theme-adaptive HSV coloring ---
-  // Dark mode: teal-cyan hue (180-200) — cool complement to warm amber accent
-  // Light mode: soft violet-lavender hue (260-280) — barely-there tint
-  float baseHue = mix(260.0, 190.0, uDark) / 360.0;
-  float hueShift = f * 0.08;
+  // Amber paper — same hue as --accent (38), not violet/teal
+  float baseHue = 38.0 / 360.0;
+  float hueShift = f * 0.06;
 
-  // Saturation: light mode very desaturated so it doesn't fight the text
-  float sat = mix(0.12, 0.55, uDark) + f * mix(0.08, 0.3, uDark);
+  float sat = mix(0.22, 0.42, uDark) + f * mix(0.10, 0.18, uDark);
 
-  // Value/brightness: light mode stays very close to the bg gray (~0.93-0.96)
-  float darkVal  = 0.10 + pow(f, 2.5) * 0.55;
-  float lightVal = 0.93 + pow(f, 3.0) * 0.03;
+  float darkVal  = 0.045 + pow(f, 1.7) * 0.26;
+  float lightVal = 0.86 + pow(f, 1.9) * 0.11;
   float val = mix(lightVal, darkVal, uDark);
 
-  // Hot highlights — visible in dark, nearly invisible in light
-  float peak = pow(smoothstep(0.7, 1.0, f), 3.0);
-  val += peak * mix(0.02, 0.45, uDark);
+  float peak = pow(smoothstep(0.62, 1.0, f), 3.0);
+  val += peak * mix(0.04, 0.16, uDark);
 
   vec3 col = hsv2rgb(vec3(baseHue + hueShift, sat, val));
 
-  // Vignette — fade edges to the mode's base tone
-  float vig = 1.0 - smoothstep(0.8, 1.5, length(uv));
-  // Light edge matches --background (hsl 214 20% 95%) ≈ rgb(0.93, 0.94, 0.96)
-  vec3 edge = mix(vec3(0.93, 0.94, 0.96), vec3(0.03, 0.02, 0.05), uDark);
+  float vig = 1.0 - smoothstep(0.85, 1.55, length(uv));
+  vec3 edge = mix(vec3(0.93, 0.94, 0.96), vec3(0.055, 0.05, 0.075), uDark);
   col = mix(edge, col, vig);
 
   gl_FragColor = vec4(col, 1.0);
-}`;
+}
+`;
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -154,9 +147,10 @@ const AetherFlow = () => {
     let mouseX = 0, mouseY = 0;
 
     // Lower resolution on mobile — the heavy FBM doesn't need full res on small screens
-    const isMobile = window.innerWidth < 640;
+    const isMobile = window.innerWidth < 1024;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const renderScale = isMobile ? 0.5 : 1;
-    const activeOpacity = isMobile ? "0.55" : "1";
+    const activeOpacity = isMobile ? "0.7" : "1";
 
     const resize = () => {
       canvas.width  = Math.round(canvas.clientWidth * renderScale);
@@ -190,36 +184,27 @@ const AetherFlow = () => {
       rafId = requestAnimationFrame(draw);
     };
 
-    let inView = false;
-
-    const startLoop = () => {
-      if (inView && !rafId) {
-        canvas.style.opacity = activeOpacity;
-        rafId = requestAnimationFrame(draw);
-      }
-    };
-
-    const stopLoop = () => {
-      cancelAnimationFrame(rafId);
-      rafId = null;
-      canvas.style.opacity = "0";
-    };
-
-    // Observe the parent section (not the fixed canvas) for visibility
-    const section = canvas.closest("section") || canvas.parentElement;
-    const io = new IntersectionObserver(([entry]) => {
-      inView = entry.isIntersecting;
-      inView ? startLoop() : stopLoop();
-    }, { threshold: 0 });
-    io.observe(section);
-
     canvas.style.opacity = activeOpacity;
+
+    if (reduced) {
+      gl.uniform1f(timeLoc, 0);
+      gl.uniform2f(mouseLoc, canvas.width / 2, canvas.height / 2);
+      gl.uniform1f(darkLoc, isDark() ? 1.0 : 0.0);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+      return () => {
+        window.removeEventListener("mousemove", onMouseMove);
+        ro.disconnect();
+        gl.deleteProgram(program);
+        gl.deleteBuffer(buf);
+      };
+    }
+
+    rafId = requestAnimationFrame(draw);
 
     return () => {
       cancelAnimationFrame(rafId);
       window.removeEventListener("mousemove", onMouseMove);
       ro.disconnect();
-      io.disconnect();
       gl.deleteProgram(program);
       gl.deleteBuffer(buf);
     };
@@ -229,7 +214,7 @@ const AetherFlow = () => {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className="fixed inset-0 h-full w-full transition-opacity duration-700 pointer-events-none"
+      className="pointer-events-none fixed inset-0 z-0 h-dvh w-screen"
     />
   );
 };

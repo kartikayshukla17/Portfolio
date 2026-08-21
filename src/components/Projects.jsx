@@ -12,6 +12,7 @@ const TiltCard = ({ children }) => {
   useEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
+    if (window.matchMedia("(pointer: coarse)").matches) return;
 
     const xTo = gsap.quickTo(el, "rotateY", { duration: 0.55, ease: EASE_GENTLE });
     const yTo = gsap.quickTo(el, "rotateX", { duration: 0.55, ease: EASE_GENTLE });
@@ -44,11 +45,64 @@ const TiltCard = ({ children }) => {
   );
 };
 
+// ── Cover media: real screenshot, or a designed placeholder when no live demo exists ──
+const ProjectCover = memo(({ project }) => {
+  if (project.image) {
+    return (
+      <div data-card-reveal className="relative aspect-[16/10] overflow-hidden border-b border-border/50 bg-muted/30">
+        <img
+          src={project.image}
+          alt={`${project.title} preview`}
+          width={1600}
+          height={1000}
+          loading="lazy"
+          className="h-full w-full object-cover object-top"
+        />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card/40 via-transparent to-transparent" />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      data-card-reveal
+      className="relative aspect-[16/10] overflow-hidden border-b border-border/50"
+      style={{
+        backgroundImage:
+          "linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--card)) 60%)",
+      }}
+    >
+      <div
+        className="absolute inset-0 opacity-40"
+        style={{
+          backgroundImage:
+            "linear-gradient(var(--pattern-fg) 1px, transparent 1px), linear-gradient(90deg, var(--pattern-fg) 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+        }}
+      />
+      <div className="absolute -bottom-10 -right-10 h-40 w-40 rounded-full bg-accent/20 blur-3xl" />
+      <span className="absolute -bottom-4 left-4 font-display font-bold text-foreground/[0.06] text-[7rem] leading-none select-none">
+        {project.title.charAt(0)}
+      </span>
+      <span className="absolute top-4 right-4 flex items-center gap-1.5 rounded-full border border-border/50 bg-card/80 px-3 py-1 text-[11px] font-medium text-muted-foreground">
+        <span className="material-symbols-outlined text-[13px]">visibility_off</span>
+        Preview unavailable
+      </span>
+    </div>
+  );
+});
+
 // ── Shared card content ────────────────────────────────────────
 const CardContent = memo(({ project }) => (
-  <div className="bg-card border border-border/50 rounded-2xl overflow-hidden">
-    <div className="p-8 flex flex-col gap-5">
+    <div className="bg-card border border-border/50 rounded-2xl overflow-hidden">
+    <ProjectCover project={project} />
+    <div className="p-5 sm:p-6 lg:p-8 flex flex-col gap-4 sm:gap-5">
       <div data-card-reveal className="flex flex-wrap gap-2">
+        {project.status && (
+          <span className="px-3 py-1 bg-accent/10 text-accent text-xs font-semibold rounded-full border border-accent/20">
+            {project.status}
+          </span>
+        )}
         {project.tech.slice(0, 4).map((t) => (
           <span key={t} className="px-3 py-1 bg-muted/50 text-foreground text-xs font-semibold rounded-full border border-border">
             {t}
@@ -57,7 +111,7 @@ const CardContent = memo(({ project }) => (
       </div>
 
       <div data-card-reveal>
-        <h3 className="text-3xl font-bold font-display text-foreground mb-1">{project.title}</h3>
+        <h3 className="text-2xl sm:text-3xl font-bold font-display text-foreground mb-1">{project.title}</h3>
         <p className="text-accent font-body text-sm font-medium">{project.tagline}</p>
       </div>
 
@@ -65,28 +119,28 @@ const CardContent = memo(({ project }) => (
         {project.description}
       </p>
 
-      <div data-card-reveal className="flex gap-3 pt-1">
+      <div data-card-reveal className="flex flex-wrap gap-3 pt-1">
         {project.demo ? (
           <a href={project.demo} target="_blank" rel="noreferrer"
-            className="flex items-center gap-1.5 bg-accent/10 text-accent hover:bg-accent/20 px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 border border-accent/20 hover:border-accent/40">
-            <span className="material-symbols-outlined text-[16px]">arrow_outward</span>
+            className="inline-flex min-h-11 items-center gap-1.5 bg-accent/10 text-accent hover:bg-accent/20 active:bg-accent/25 px-5 py-2.5 rounded-xl text-sm font-bold transition-colors duration-200 border border-accent/20 hover:border-accent/40">
+            <span className="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_outward</span>
             Live App
           </a>
         ) : (
-          <div className="flex items-center gap-1.5 bg-muted/50 text-muted-foreground px-5 py-2.5 rounded-xl text-sm font-bold cursor-not-allowed border border-border">
-            <span className="material-symbols-outlined text-[16px]">arrow_outward</span>
+          <div className="inline-flex min-h-11 items-center gap-1.5 bg-muted/50 text-muted-foreground px-5 py-2.5 rounded-xl text-sm font-bold border border-border">
+            <span className="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_outward</span>
             Offline
           </div>
         )}
         {project.code ? (
           <a href={project.code} target="_blank" rel="noreferrer"
-            className="flex items-center gap-1.5 glass-panel hover:bg-white/10 text-foreground px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 border border-border/50">
-            <span className="material-symbols-outlined text-[16px]">code</span>
+            className="inline-flex min-h-11 items-center gap-1.5 bg-muted/40 text-foreground px-5 py-2.5 rounded-xl text-sm font-bold transition-colors duration-200 border border-border/50 hover:bg-muted">
+            <span className="material-symbols-outlined text-[16px]" aria-hidden="true">code</span>
             Source
           </a>
         ) : (
-          <div className="flex items-center gap-1.5 bg-muted/30 text-muted-foreground px-5 py-2.5 rounded-xl text-sm font-bold cursor-not-allowed border border-border/30">
-            <span className="material-symbols-outlined text-[16px]">lock</span>
+          <div className="inline-flex min-h-11 items-center gap-1.5 bg-muted/30 text-muted-foreground px-5 py-2.5 rounded-xl text-sm font-bold border border-border/30">
+            <span className="material-symbols-outlined text-[16px]" aria-hidden="true">lock</span>
             Private
           </div>
         )}
@@ -104,12 +158,11 @@ const Projects = memo(({ projects }) => {
   const navRef = useRef(null);
   const [active, setActive] = useState(0);
   const prevActive = useRef(0);
-  const hasEnteredRef = useRef(false);
   const [isDesktop, setIsDesktop] = useState(
     () => typeof window !== "undefined" && window.innerWidth >= 768
   );
 
-  // Track breakpoint
+  // Track breakpoint — sticky archive + wheel-snap from 768px (same as GitHub main)
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
     const handler = (e) => setIsDesktop(e.matches);
@@ -222,56 +275,6 @@ const Projects = memo(({ projects }) => {
     };
   }, [isDesktop, projects]);
 
-  // Desktop: initial entrance animation when section scrolls into view
-  useEffect(() => {
-    if (!isDesktop || !stickyRef.current) return;
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: outerRef.current,
-          start: "top 80%",
-          once: true,
-        },
-      });
-
-      // Header slides in
-      tl.from("[data-desktop-header] > *", {
-        opacity: 0, y: 30, duration: 0.7, ease: EASE, stagger: 0.1,
-      });
-
-      // Nav items cascade in
-      tl.from("[data-nav-item]", {
-        opacity: 0, x: -20, duration: 0.5, ease: EASE, stagger: 0.06,
-      }, "-=0.3");
-
-      // Card area scales up from slightly smaller
-      tl.fromTo(cardAreaRef.current,
-        { opacity: 0, scale: 0.92, y: 40 },
-        { opacity: 1, scale: 1, y: 0, duration: 0.8, ease: EASE },
-        "-=0.4"
-      );
-
-      // Then stagger inner card pieces
-      tl.from(
-        cardAreaRef.current?.querySelectorAll("[data-card-reveal]") || [],
-        { opacity: 0, y: 16, duration: 0.5, ease: EASE, stagger: 0.08 },
-        "-=0.35"
-      );
-
-      // Counter fades in
-      tl.from("[data-counter]", {
-        opacity: 0, duration: 0.4, ease: EASE_GENTLE,
-      }, "-=0.3");
-
-      // Scroll hint
-      tl.from("[data-scroll-hint]", {
-        opacity: 0, y: 10, duration: 0.4, ease: EASE_GENTLE,
-      }, "-=0.2");
-    }, stickyRef);
-
-    return () => ctx.revert();
-  }, [isDesktop]);
-
   // Desktop: staggered card transition when active project changes
   useEffect(() => {
     if (!isDesktop || prevActive.current === active || !cardAreaRef.current) return;
@@ -316,22 +319,6 @@ const Projects = memo(({ projects }) => {
     }
   }, [active, isDesktop]);
 
-  // Mobile: stagger entrance
-  useEffect(() => {
-    if (isDesktop) return;
-    const ctx = gsap.context(() => {
-      gsap.from("[data-project-card]", {
-        opacity: 0, y: 30, duration: 0.7, ease: EASE, stagger: 0.1,
-        scrollTrigger: { trigger: "[data-projects-grid]", start: "top 85%", once: true },
-      });
-      gsap.from("[data-mobile-header]", {
-        opacity: 0, y: 20, duration: 0.8, ease: EASE,
-        scrollTrigger: { trigger: "[data-mobile-header]", start: "top 88%", once: true },
-      });
-    }, outerRef);
-    return () => ctx.revert();
-  }, [isDesktop]);
-
   // Click list item → snap to that project via Lenis
   const scrollToProject = useCallback((i) => {
     const section = outerRef.current;
@@ -360,13 +347,9 @@ const Projects = memo(({ projects }) => {
       <div ref={stickyRef} className="hidden md:flex md:flex-col sticky top-0 h-screen overflow-hidden">
 
         {/* Centered header */}
-        <div data-desktop-header className="text-center shrink-0 pt-10 pb-6">
-          <span className="text-accent font-display font-bold text-xs sm:text-sm tracking-widest uppercase mb-3 block">
-            04. Archive
-          </span>
-          <h2 className="text-4xl sm:text-5xl font-bold font-display text-foreground">
-            Featured{" "}
-            <span className="text-muted-foreground font-normal italic">Projects.</span>
+        <div className="shrink-0 px-10 pb-6 pt-10 text-left xl:px-14">
+          <h2 className="font-display text-4xl font-bold text-foreground sm:text-5xl">
+            Featured <span className="font-normal text-muted-foreground">projects.</span>
           </h2>
         </div>
 
@@ -392,9 +375,10 @@ const Projects = memo(({ projects }) => {
             {projects.map((p, i) => (
               <button
                 key={p.title}
+                type="button"
                 data-nav-item
                 onClick={() => scrollToProject(i)}
-                className={`text-left flex items-center gap-4 py-3 px-3 rounded-xl relative z-10 transition-colors duration-300 ${
+                className={`text-left flex items-center gap-4 py-3 px-3 min-h-11 rounded-xl relative z-10 transition-colors duration-300 ${
                   i === active ? "text-foreground" : "text-muted-foreground hover:text-foreground/70"
                 }`}
               >
@@ -413,13 +397,13 @@ const Projects = memo(({ projects }) => {
                   {p.title}
                 </span>
                 <span
-                  className={`h-px flex-1 transition-all duration-500 ease-out ${
+                  className={`h-px flex-1 transition-colors duration-300 ${
                     i === active ? "bg-accent/50 scale-x-100" : "bg-border/20 scale-x-50"
                   }`}
                   style={{ transformOrigin: "left" }}
                 />
                 <span
-                  className={`material-symbols-outlined text-[14px] shrink-0 transition-all duration-300 ${
+                  className={`material-symbols-outlined text-[14px] shrink-0 transition-opacity duration-200 ${
                     i === active ? "text-accent opacity-100 translate-x-0" : "opacity-0 -translate-x-2"
                   }`}
                 >
@@ -454,18 +438,14 @@ const Projects = memo(({ projects }) => {
         </div>
       </div>
 
-      {/* ── Mobile: stacked card grid ───────────────────────────────── */}
-      <div className="md:hidden px-5 py-24 sm:px-8">
-        <div data-mobile-header className="text-center mb-12">
-          <span className="text-accent font-display font-bold text-xs tracking-widest uppercase mb-3 block">
-            04. Archive
-          </span>
-          <h2 className="text-4xl font-bold font-display text-foreground mb-3">
-            Featured{" "}
-            <span className="text-muted-foreground font-normal italic">Projects.</span>
+      {/* ── Phone: stacked cards ───────────────────────────────────── */}
+      <div className="md:hidden px-5 py-20 sm:px-8 pb-[max(5rem,env(safe-area-inset-bottom))]">
+        <div className="mb-12 text-left">
+          <h2 className="mb-3 font-display text-4xl font-bold text-foreground">
+            Featured <span className="font-normal text-muted-foreground">projects.</span>
           </h2>
-          <p className="text-slate-500 dark:text-slate-400 font-body max-w-xl mx-auto text-sm">
-            Code built to hold. Interfaces built to be remembered.
+          <p className="max-w-xl font-body text-sm text-slate-500 dark:text-slate-400">
+            Live apps, and a few still getting built.
           </p>
         </div>
 

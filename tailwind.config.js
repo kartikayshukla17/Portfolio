@@ -52,8 +52,8 @@ export default {
         },
       },
       fontFamily: {
-        "display": ["Playfair Display", "serif"],
-        "body": ["Inter", "sans-serif"]
+        display: ["Zilla Slab", "ui-serif", "Georgia", "serif"],
+        body: ["Fira Sans", "ui-sans-serif", "system-ui", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",
