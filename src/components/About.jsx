@@ -51,7 +51,6 @@ const About = () => (
           <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/55 to-transparent" />
           <figcaption className="absolute inset-x-4 bottom-4 flex justify-between gap-3 font-body text-xs text-white [text-shadow:0_1px_6px_rgba(0,0,0,0.7)]">
             <span>Kartikay Shukla</span>
-            <span>Noida, India</span>
           </figcaption>
         </figure>
       </div>

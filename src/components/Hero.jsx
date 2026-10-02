@@ -67,8 +67,7 @@ const Hero = () => {
                 className="underline decoration-accent/60 decoration-2 underline-offset-[0.2em] transition-colors duration-200 hover:text-accent hover:decoration-accent"
               >
                 Verchool Platforms
-              </a>{" "}
-              · Noida, India
+              </a>
             </p>
             <p className="mt-1 inline-flex items-center gap-2 font-body text-xs text-muted-foreground">
               <span className="relative flex h-2 w-2" aria-hidden="true">

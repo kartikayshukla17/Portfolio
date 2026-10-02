@@ -20,10 +20,10 @@ describe("hero byline", () => {
     assert.doesNotMatch(avatarTag, /loading="lazy"/);
   });
 
-  it("names the role and links Verchool Platforms to verchool.ai", () => {
+  it("names the role, links Verchool Platforms to verchool.ai, and shows no city", () => {
     assert.match(hero, /Full Stack Developer at/);
     assert.match(hero, /href="https:\/\/verchool\.ai"[\s\S]*?Verchool Platforms/);
-    assert.match(hero, /Noida, India/);
+    assert.doesNotMatch(hero, /Noida/);
   });
 
   it("replaces the old kicker line", () => {
