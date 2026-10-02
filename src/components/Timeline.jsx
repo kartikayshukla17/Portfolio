@@ -18,11 +18,11 @@ const timelineItems = [
     title: "Full Stack Developer",
     company: "Independent",
     description:
-      "Freelance before Verchool. React, Next.js, Node. Paid work and the messy parts of getting something live.",
+      "Freelance before Verchool Platforms. React, Next.js, Node. Paid work and the messy parts of getting something live.",
     icon: "layers",
   },
   {
-    year: "2022",
+    year: "2023",
     title: "iOS Developer",
     company: "Origins",
     description: "Where I started: iOS apps in Swift and SwiftUI. Trying to make something that felt obvious in the hand.",
