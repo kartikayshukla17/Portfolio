@@ -16,11 +16,11 @@ describe("projects archive scroll (GitHub main contract)", () => {
       "overflow-x-hidden on an ancestor creates a scroll container and breaks sticky"
     );
     assert.doesNotMatch(appSrc, /overflow-x-hidden/);
-    const stampIdx = appSrc.indexOf("<StampField");
+    const stampIdx = appSrc.indexOf("<BlueprintGrid");
     const clipIdx = appSrc.indexOf("overflow-clip");
     assert.ok(
       stampIdx !== -1 && clipIdx !== -1 && stampIdx < clipIdx,
-      "stamp field must mount outside overflow-clip or sticky breaks"
+      "background grid must mount outside overflow-clip or sticky breaks"
     );
   });
 

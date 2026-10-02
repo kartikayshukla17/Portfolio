@@ -6,7 +6,9 @@ import skills from "./data/skills.js";
 import project from "./data/project.js";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
-import StampField from "./components/ui/stamp-field";
+import BlueprintGrid from "./components/ui/blueprint-grid";
+import { SmoothCursor } from "./components/ui/smooth-cursor";
+import { usePrefersReducedMotion } from "./hooks/useMediaQuery";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,6 +20,16 @@ const Contact = lazy(() => import("./components/Contact"));
 const Footer = lazy(() => import("./components/Footer"));
 
 const App = () => {
+  const reducedMotion = usePrefersReducedMotion();
+
+  // Hide the native cursor everywhere (links and buttons set their own) while the smooth cursor is on
+  useEffect(() => {
+    if (reducedMotion) return;
+    const root = document.documentElement;
+    root.classList.add("has-smooth-cursor");
+    return () => root.classList.remove("has-smooth-cursor");
+  }, [reducedMotion]);
+
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -52,7 +64,8 @@ const App = () => {
 
   return (
     <>
-      <StampField />
+      <BlueprintGrid />
+      {!reducedMotion && <SmoothCursor />}
       <div className="page-grain" aria-hidden="true" />
       <div className="relative z-10 flex min-h-dvh flex-col overflow-clip font-body text-slate-900 antialiased transition-colors duration-300 dark:text-slate-100">
         <a href="#main" className="skip-link">
