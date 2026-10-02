@@ -1,5 +1,15 @@
 const project = [
   {
+    title: "CruxIO",
+    tagline: "Crash investigation on top of Firebase Crashlytics.",
+    description:
+      "Ties crashes to GitHub commits, flags regressions, and ranks what to fix first. iOS, Android, Flutter, and React Native.",
+    tech: ["Next.js 16", "TypeScript", "Supabase", "Claude AI", "Firebase"],
+    code: "",
+    demo: "https://cruxio.io/",
+    image: "/projects/cruxio.webp",
+  },
+  {
     title: "Notarize Doctor",
     tagline: "Catch Electron Mac signing failures before CI does.",
     description:
@@ -18,16 +28,6 @@ const project = [
     code: "https://github.com/kartikayshukla17/offclock",
     demo: "",
     status: "Shipping",
-  },
-  {
-    title: "CruxIO",
-    tagline: "Crash investigation on top of Firebase Crashlytics.",
-    description:
-      "Ties crashes to GitHub commits, flags regressions, and ranks what to fix first. iOS, Android, Flutter, and React Native.",
-    tech: ["Next.js 16", "TypeScript", "Supabase", "Claude AI", "Firebase"],
-    code: "",
-    demo: "https://cruxio.io/",
-    image: "/projects/cruxio.webp",
   },
   {
     title: "B2B Marketplace",
