@@ -2,6 +2,7 @@ import { useTheme } from "../hooks/useTheme";
 import { useActiveSection } from "../hooks/useActiveSection";
 import { Button } from "@/components/ui/button";
 import { memo, useState, useEffect, useCallback, useRef } from "react";
+import { ShimmerButton } from "./ui/shimmer-button";
 
 const navLinks = [
   { name: "About", href: "#about", section: "about" },
@@ -164,13 +165,9 @@ const Header = memo(() => {
                   {link.name}
                 </a>
               ))}
-              <a
-                href="#contact"
-                onClick={closeMenu}
-                className="mt-4 flex min-h-12 items-center justify-center rounded-full bg-accent px-6 font-bold text-accent-foreground hover:opacity-85 transition-opacity duration-300 sm:hidden"
-              >
+              <ShimmerButton href="#contact" onClick={closeMenu} className="mt-4 w-full sm:hidden">
                 Hire Me
-              </a>
+              </ShimmerButton>
             </nav>
           </div>
         </div>

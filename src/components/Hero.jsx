@@ -2,7 +2,8 @@ import { memo, useRef, useEffect } from "react";
 import gsap from "gsap";
 import { EASE } from "../utils/motion";
 import { usePrefersReducedMotion } from "../hooks/useMediaQuery";
-import { LiquidMetalButton } from "./ui/liquid-metal-button";
+import { ShimmerButton } from "./ui/shimmer-button";
+import { LinkButton } from "./ui/link-button";
 
 const CharMask = ({ text, dataAttr }) =>
   text.split("").map((char, i) => (
@@ -21,7 +22,7 @@ const TypeWriter = ({ children }) =>
     ));
 
 const HERO_LEDE =
-  "At Verchool. OffClock, Notarize Doctor, and CruxIO are mine. The rest is in the archive.";
+  "At Verchool Platforms. OffClock, Notarize Doctor, and CruxIO are mine. The rest is in the archive.";
 
 const Hero = () => {
   const sectionRef = useRef(null);
@@ -46,9 +47,38 @@ const Hero = () => {
       className="relative overflow-x-clip bg-transparent px-5 pt-28 pb-16 sm:px-8 sm:pt-36 sm:pb-20 lg:px-12 lg:pt-40 lg:pb-24"
     >
       <div className="mx-auto flex w-full max-w-7xl flex-col items-start text-left">
-        <p className="mb-5 font-body text-sm text-muted-foreground">
-          Kartikay Shukla — available
-        </p>
+        <div data-hero-byline className="mb-6 flex items-center gap-3.5 sm:mb-8 sm:gap-4">
+          <img
+            src="/kartikay-avatar.webp"
+            alt="Portrait of Kartikay Shukla"
+            width={192}
+            height={192}
+            decoding="async"
+            className="h-14 w-14 flex-none rounded-full object-cover ring-2 ring-accent ring-offset-2 ring-offset-background sm:h-[4.25rem] sm:w-[4.25rem]"
+          />
+          <div className="min-w-0">
+            <p className="font-body text-base font-semibold text-foreground">Kartikay Shukla</p>
+            <p className="font-body text-sm leading-snug text-muted-foreground">
+              Full Stack Developer at{" "}
+              <a
+                href="https://verchool.ai"
+                target="_blank"
+                rel="noreferrer"
+                className="underline decoration-accent/60 decoration-2 underline-offset-[0.2em] transition-colors duration-200 hover:text-accent hover:decoration-accent"
+              >
+                Verchool Platforms
+              </a>{" "}
+              · Noida, India
+            </p>
+            <p className="mt-1 inline-flex items-center gap-2 font-body text-xs text-muted-foreground">
+              <span className="relative flex h-2 w-2" aria-hidden="true">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/70 motion-reduce:animate-none" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+              </span>
+              Available for work
+            </p>
+          </div>
+        </div>
 
         <h1 className="mb-6 max-w-4xl font-display font-bold tracking-[-0.02em] leading-[1.08] sm:mb-8">
           <span className="flex flex-wrap gap-x-[0.28em] text-[clamp(2.5rem,7vw,6rem)] text-foreground">
@@ -67,23 +97,16 @@ const Hero = () => {
           {prefersReducedMotion ? HERO_LEDE : <TypeWriter>{HERO_LEDE}</TypeWriter>}
         </p>
 
-        <div data-hero-cta className="flex w-full max-w-sm flex-col items-stretch gap-4 sm:max-w-none sm:w-auto sm:flex-row sm:items-center sm:gap-8">
-          <LiquidMetalButton
-            label="Start a project"
-            width={180}
-            innerBackground="hsl(var(--foreground))"
-            textColor="hsl(var(--background))"
+        <div data-hero-cta className="flex w-full max-w-sm flex-col items-start gap-3 sm:max-w-none sm:w-auto sm:flex-row sm:items-center sm:gap-6">
+          <ShimmerButton
             onClick={() => {
               const el = document.getElementById("contact");
               if (el) el.scrollIntoView({ behavior: "smooth" });
             }}
-          />
-          <a
-            href="#projects"
-            className="inline-flex min-h-11 cursor-pointer items-center font-body text-[15px] font-medium text-muted-foreground underline-offset-4 transition-colors duration-200 hover:text-foreground hover:underline sm:text-[16px]"
           >
-            See the work
-          </a>
+            Start a project
+          </ShimmerButton>
+          <LinkButton href="#projects">See the work</LinkButton>
         </div>
       </div>
     </section>
